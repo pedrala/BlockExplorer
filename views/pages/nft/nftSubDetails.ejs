@@ -1,0 +1,596 @@
+<!-- NAVBAR HOME-->
+<%- include('../../pages/navBar/navBarNftSubDetails') %>
+
+<!--  BEGIN MAIN CONTAINER  -->
+<div class="main-container" id="container">
+
+    <!--  BEGIN OVERLAY  -->
+    <div class="overlay"></div>
+    <div class="cs-overlay"></div>
+    <div class="search-overlay"></div>
+    <!-- END OVERLAY -->
+
+    <!--Account-->
+    <div class="layout-px-spacing">
+        <div class="row layout-top-spacing">      
+            <!--  SEARCH BAR  -->       
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">               
+                <%- include('../../pages/navBar/searchBar') %>    
+            </div>        
+            <!--  BEGIN CONTENT PART  -->  
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">  
+                <h3 class="page-title" style="margin:30px 0px 20px 20px">NFT 
+                    
+                    <span id="tokenInfo" style="margin:5px 5px;padding:5px 5px;font-size:18px;color: #545986;">
+                        <span id="tokenSymbol1"></span>   (# <span id="tokenId1"></span>  )
+                    </span>       
+                   
+                </h3>
+            </div>      
+        
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12 layout-spacing">
+                <div class="widget widget-account-invoice-two">
+                    <div class="widget-content">
+                        <div class="account-box">
+                            <div class="info">
+                                <div class="inv-title">
+                                    <h5 class=""> Overview </h5>
+                                </div>
+                                <div class="inv-balance-info">
+                                    <div class="coinlogo" id="tokenLogo" style="display: none">
+                                        <!-- <h4 style="margin:5px 5px;padding:5px 5px;font-size:12px;background-color: #3b3f5c; color: white;">
+                                            ERC-17</h4> -->
+                                        <h3 id="tokenSymbol2"
+                                            style="margin:5px 5px;padding:5px 5px;font-size:20px;color:#6d6d6d">
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-12 layout-spacing">
+
+                <div class="nftInfoRow-container">
+                    <div class="nftInfoCellColor1-container">
+                        <div class="title2-box">
+                            NFT Created Time
+                        </div>  
+                        <div class="nftInfo-box" id="createTm">
+
+                        </div>                    
+                    </div>                  
+                </div>
+                <div class="nftInfoRow-container">
+                    <div class="nftInfoCellColor2-container">
+                        <div class="title2-box">
+                            Token Name
+                        </div>
+                        <div class="nftInfo-box" id="tokenName">
+
+                        </div>
+                    </div>
+                    <div class="nftInfoCellColor2-container">
+                        <div class="title2-box">
+                            NFT Name
+                        </div>
+                        <div class="nftInfo-box" id="nftName">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="nftInfoRow-container">
+                    <div class="nftInfoCellColor3-container">
+                        <div class="title2-box">
+                            Token ID
+                        </div>
+                        <div class="nftInfo-box" id="tokenId2">
+
+                        </div>                 
+                    </div>
+                    <div class="nftInfoCellColor3-container">
+                        <div class="title2-box">
+                            Owner
+                        </div>
+                        <div class="nftInfo-box" id="owner">
+
+                        </div>                 
+                    </div>
+                </div>
+                <div class="nftInfoRow-container">
+                    <div class="nftInfoCellColor1-container">
+                        <div class="title2-box">
+                            Tx Hash
+                        </div>
+                        <div class="nftInfo-box" id="scHash">
+                           
+                        </div>
+                        <div class="copyicon" id="scHashCopy">
+
+                        </div>  
+                    </div>
+                </div>
+                <div class="nftInfoRow-container">
+                    <div class="nftInfoCellColor2-container" id="txCnt">
+                        <div class="title2-box">
+                            Tx Count
+                        </div>
+                        <div class="nftInfo-box" id="txCount">
+
+                        </div>
+                    </div>
+                    <div class="nftInfoCellColor2-container">
+                        <div class="title2-box">
+                            Ratio(%)
+                        </div>
+                        <div class="nftInfo-box" id="ratio">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+      
+            <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing" id = "tabArea">
+                <div class="nftTable">
+                    <ul class="nav nav-pills mb-3 mt-3" id="pills-tab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="pills-transfers-tab" data-toggle="pill"
+                                href="#pills-transfers" role="tab" aria-controls="pills-transfers"
+                                aria-selected="true">NFT Transfers</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="pills-tabContent">
+                        <div class="tab-pane fade show active" id="pills-transfers" role="tabpanel">
+                            <div class="table-responsive">
+                                <table id="transfers-config" class="table dt-table-hover dataTable"
+                                    style="width:100%; margin: 0 auto 8px;" role="grid">
+                                    <thead style="background-color: #f4e6e6;">
+                                        <tr role="row">
+                                            <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">Block No
+                                            </th>
+                                            <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 200px;">Age
+                                            </th>
+                                            <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 300px;">Hash
+                                            </th>
+                                            <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 150px;">From
+                                            </th>
+                                            <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 150px;">To
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>                          
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>     
+    </div>
+</div>
+<!--  END CONTENT PART  -->
+
+<!-- SEARCH FILTER MENU-->
+<div class="filter-dropdown-menu" id="drop-content" style="display: none;">
+    <ul>
+        <li onClick="setFilter('All Filters');"> All Filters</li>
+        <li onClick="setFilter('Token Sym.');"> Token Sym.</li>
+        <li onClick="setFilter('Token Name');"> Token Name</li>
+        <li onClick="setFilter('Account ID');"> Account ID</li>
+        <li onClick="setFilter('Account No.');"> Account No.</li>
+        <li onClick="setFilter('Txn ID');"> Txn ID</li>
+        <li onClick="setFilter('Block No.');"> Block No.</li>
+    </ul>
+</div>
+
+</div>
+
+<style>
+    .navbar .navbar-item .nav-item.user-profile-dropdown a.user .media img {
+        box-shadow: 0 0px 0px rgb(0 0 0 / 7%), 0 0px 0px rgb(0 0 0 / 14%);
+    }
+
+    .layout-px-spacing {
+        padding: 0 32px!important;
+        min-height: calc(100vh - 125px)!important;
+    }
+
+    .layout-spacing {
+        padding: 0px 10px 20px;
+    }
+
+    .layout-top-spacing {
+        margin-top: 20px;
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        flex-basis: 1200px;
+        overflow: auto;
+        max-width: 1200px;
+        margin: 0px auto;
+    }
+
+    *, ::after, ::before {
+        box-sizing: border-box;
+    }  
+
+    .title-box {
+        padding: 0px 0px;
+        align-self: center;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 600;
+        color: #6d6d6d;
+    }
+
+    .nftInfoRow-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        flex-basis: 900px;
+        height: auto;
+        flex: 1 1 auto;
+    }
+
+    .nftInfoCellColor1-container {
+        display: flex;
+        flex-direction: row;
+        height: auto;
+        /* flex-basis: 700px;      */
+        flex-grow: 1;
+        place-content: stretch stretch;
+        background-color: rgba(220, 207, 247, 0.34);
+        background-clip: border-box;
+        padding: 20px 30px;
+        margin: 0px 5px 10px 5px;
+        font-size: 18px;
+        color: black;
+    }
+
+    .nftInfoCellColor2-container {
+        display: flex;
+        height: auto;
+        flex-grow: 1;
+        place-content: stretch stretch;
+        background-color: rgba(186, 231, 255, 0.34);
+        background-clip: border-box;
+        padding: 20px 30px;
+        margin: 0px 5px 10px 5px;
+        font-size: 18px;
+        color: black;
+    }
+
+    .nftInfoCellColor3-container {
+        display: flex;
+        height: auto;
+        flex-grow: 1;
+        place-content: stretch stretch;
+        background-color: rgba(255, 236, 203, 0.34);
+        background-clip: border-box;
+        padding: 20px 30px;
+        margin: 0px 5px 10px 5px;
+        font-size: 18px;
+        color: black;
+    }
+
+    .title2-box {
+        padding: 0px 10px;
+        align-self: center;
+        text-align: left;
+        font-size: 14px;
+        font-weight: 600;
+        color: #6d6d6d;
+    }
+
+    .nftInfo-box {
+        padding: 0px 10px;
+        word-wrap: break-word;
+        height: auto;
+        align-self: center;
+        text-align: left;
+        font-size: 17px;
+        font-weight: 600;
+        color: #d52e30;
+        /* flex: 1 1 100px; */
+    }
+
+    .copyicon {
+        justify-content: right;
+        align-self: center;
+        cursor: pointer;
+    }
+
+    .image {
+        width: 20px;
+        height: 30px;
+        content: url("/images/copy.svg");
+    }
+
+    .widget-account-invoice-two {
+        flex-basis: 280px;
+        height: 200px;
+    }
+
+    .widget-account-invoice-two .account-box h5 {
+        font-size: 18px;
+        font-weight: 400;
+    }
+
+    .nftInfo-container {
+        display: flex;
+        flex-basis: auto;
+        width: 1200px;
+        height: auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-content: stretch;
+        background-color: #fff;
+        background-clip: border-box;
+        padding: 20px 30px;
+        margin: 0px 0px 10px 0px;
+        box-sizing: border-box;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+        box-shadow: 0 0 40px 0 rgb(94 92 154 / 6%);
+    }
+
+
+    /* Hash의 길이가 다른 문제점을 해결하기 위해 문자당 width가 같은 monospace 계열 폰트를 사용
+    : Courier, Courier New, Lucida, Console, Monaco */
+    .monospace {
+        font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .alignLeft {
+        text-align: left;
+    }
+
+    .alignProgressTd {
+        text-align: left;
+        align-items: center;
+    }
+
+    .alignRight {
+        text-align: right;
+    }
+
+    .alignCenter {
+        text-align: center;
+    }
+
+    .textColor {
+        color: #d52e30;
+    }
+
+    .cursorPointer {
+        cursor: pointer;
+    }
+
+    .cursorPointer:hover {
+        color: #d52e30;
+    }
+
+    .dataTables_wrapper {
+        overflow: auto;
+    }
+
+    .container,
+    .container-fluid,
+    .container-sm,
+    .container-md,
+    .container-lg,
+    .container-xl {
+        width: 100%;
+        padding: 0;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .nftTable {
+        flex-basis: 1200px;
+        max-width: 1200px;
+        min-height: 500px;
+        padding: 15px 30px;
+        position: relative;
+        box-sizing: border-box;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+        background-color: #fff;
+        color: black;
+        box-shadow: 0 0 40px 0 rgb(94 92 154 / 6%);
+    }
+
+    th,
+    td {
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    #transfers-config thead .sorting,
+    #transfers-config thead .sorting_asc,
+    #transfers-config thead .sorting_desc {
+        background: none;
+        cursor: default;
+    }
+
+    #holders-config thead .sorting,
+    #holders-config thead .sorting_asc,
+    #holders-config thead .sorting_desc {
+        background: none;
+        cursor: default;
+    }
+
+    #inventory-config thead .sorting,
+    #inventory-config thead .sorting_asc,
+    #inventory-config thead .sorting_desc {
+        background: none;
+        cursor: default;
+    }
+
+    .custom-context-menu {
+        position: absolute;
+        box-sizing: border-box;
+        height: 30px;
+        min-width: 100px;
+        background-color: #f9d781;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+    }
+
+    .custom-context-menu ul {
+        list-style: none;
+        padding: 0;
+        background-color: transparent;
+    }
+
+    .custom-context-menu li {
+        padding: 3px 5px;
+        cursor: pointer;
+        color: black;
+        font-weight: 400;
+    }
+
+    .custom-context-menu li:hover {
+        background-color: #f0f0f0;
+        border: 1px solid #f0f0f0;
+        border-radius: 0.25rem;
+    }
+
+    .coinlogo {
+        padding: 10px;
+        border-radius: 50px;
+        background-color: #fff;
+    }
+
+    .image {
+        width: 20px;
+        height: 30px;
+        content: url("/images/copy.svg");
+    }
+
+    .form-control {
+        height: auto;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0px 0px rgb(194 213 255 / 62%);
+        border: 1px solid #bfc9d4;
+    }
+
+    .input-group>.form-control:not(:first-child),
+    .input-group>.custom-select:not(:first-child) {
+        border-left: 0;
+        border-right: 0;
+    }
+
+    .input-group .input-group-prepend .input-group-text {
+        border: 1px solid #bfc9d4;
+        background-color: #fff;
+    }
+
+    .deleteTextBtnArea {
+        display: flex;
+        background-color: white;
+        padding: 0px 10px;
+        width: auto;
+        height: auto;
+        border: 1px solid #bfc9d4;
+        color: #3b3f5c;
+        border-radius: 0px;
+        border-left: 0;
+        border-right: 0;
+    }
+
+    .deleteTextBtn {
+        justify-content: center;
+        align-self: center;
+        background-color: white;
+        width: 20px;
+        content: url("/images/close-button.svg");
+        cursor: pointer;
+    }
+
+    .searchDivider {
+        border-left: 1px solid #bfc9d4;
+        height: 50px;
+    }
+
+    .searchFilters {
+        display: grid;
+        grid-template-columns: 103px 20px;
+        background-color: white;
+        min-width: 133px;
+        height: auto;
+        border: 1px solid #bfc9d4;
+        color: #3b3f5c;
+        font-size: 15px;
+        letter-spacing: 1px;
+        padding: 12px 0px 12px 20px;
+        margin-left: 0px;
+        margin-right: 0px;
+        border-radius: 0px 6px 6px 0px;
+        border-left: 0;
+        cursor: pointer;
+    }
+
+    .searchFilters:hover {
+        color: #d52e30;
+    }
+
+    .searchFilterTitle {
+        text-align: center;
+    }
+
+    .arrowIcon {
+        align-self: center;
+        width: 15px;
+        height: 15px;
+        content: url("/images/arrow-down.png");
+    }
+
+    .filter-dropdown-menu {
+        position: absolute;
+        box-sizing: border-box;
+        min-width: 133px;
+        background-color: #ffffff;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+    }
+
+    .filter-dropdown-menu ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        background-color: transparent;
+    }
+
+    .filter-dropdown-menu li {
+        padding: 10px 30px;
+        cursor: pointer;
+        color: black;
+    }
+
+    .filter-dropdown-menu li:hover {
+        background-color: #f0f0f0;
+    }
+
+
+    /* 탑메뉴 active 이외 메뉴 호버시 아이콘 문자열 빨간색 처리 */
+    .topbar-nav.header nav#topbar ul.menu-categories li.menu>a:hover svg:not(.feather-chevron-down) {
+        color: #d52e30;
+        fill: #d52e30;
+    }
+
+    .topbar-nav.header nav#topbar ul.menu-categories li.menu a>div svg:not(.feather-chevron-down) {
+        stroke-width: 1.5px;
+        stroke: black;
+    }
+</style>

@@ -1,0 +1,372 @@
+<!-- NAVBAR HOME-->
+<%- include('../../pages/navBar/navBarNftList') %>
+
+<!--  BEGIN MAIN CONTAINER  -->
+<div class="main-container" id="container">
+
+    <!--  BEGIN OVERLAY  -->
+    <div class="overlay"></div>
+    <div class="cs-overlay"></div>
+    <div class="search-overlay"></div>
+    <!-- END OVERLAY -->
+
+    <!--Blocks-->
+    <div class="layout-px-spacing">
+        <div class="row layout-top-spacing">
+            <!--  SEARCH BAR  -->      
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">              
+                <%- include('../../pages/navBar/searchBar') %>
+            </div>
+      
+            <!--  BEGIN CONTENT PART  -->
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">         
+                <h3 class="page-title" style="margin:30px 0px 20px 20px;">NFT
+                    <!-- <span
+                        style="margin:5px 5px;padding:5px 5px;font-size:12px;background-color: #3b3f5c; color: white;">ERC-17</span>
+                    <span
+                        style="margin:5px 5px;padding:5px 5px;font-size:12px;background-color: #3b3f5c; color: white;">KIP-37</span> -->
+                </h3>
+            </div>
+    
+            <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
+                <div class="nftTable">
+                    <div id="nft-config_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                        <div class="table-responsive">
+
+                            <p style="margin-bottom:10px">
+                                Registration of tokens occur without a seperate review, and tokens are not guaranteed to
+                                be safe and/or
+                                trustworthy.
+                                Users are advised to perform their Due Diligence for tokens.
+                            </p>
+
+                            <table id="nft-config" class="table dt-table-hover dataTable"
+                                style="width:100%; margin: 0 auto 8px;" role="grid" aria-describedby="nft-config_info">
+                                <thead style="background-color: #f4e6e6;">
+                                    <tr role="row">
+                                        <th class="sorting" tabindex="0"  rowspan="1" colspan="1" style="width: 90px;">
+                                            Name
+                                        </th>
+                                        <th class="sorting" tabindex="0"  rowspan="1" colspan="1" style="width: 90px;">
+                                            Symbol
+                                        </th>
+                                        <th class="sorting" tabindex="0"  rowspan="1" colspan="1" style="width: 160px;">
+                                            NFT Name
+                                        </th>
+                                        <th class="sorting" tabindex="0"  rowspan="1" colspan="1" style="width: 300px;">
+                                            Contract Address
+                                        </th>
+                                        <th class="sorting" tabindex="0"  rowspan="1" colspan="1" style="width: 100px;">
+                                            Action Target
+                                        </th>
+                                        <th class="sorting" tabindex="0"  rowspan="1" colspan="1" style="width: 100px;">
+                                            Contract Action
+                                        </th>
+                                        <th class="sorting" tabindex="0"  rowspan="1" colspan="1" style="width: 100px;">
+                                            Ratio
+                                        </th>
+                                        <th class="sorting" tabindex="0"  rowspan="1" colspan="1" style="width: 100px;">
+                                            Total Transfers
+                                        </th>     
+                                    </tr>
+                                </thead>
+                                <tbody id="nft">
+                                  
+
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  END CONTENT PART  -->
+
+    <!-- SEARCH FILTER MENU-->
+    <div class="filter-dropdown-menu" id="drop-content" style="display: none;">
+        <ul>
+            <li onClick="setFilter('All Filters');"> All Filters</li>
+            <li onClick="setFilter('Token Sym.');"> Token Sym.</li>
+            <li onClick="setFilter('Token Name');"> Token Name</li>
+            <li onClick="setFilter('Account ID');"> Account ID</li>
+            <li onClick="setFilter('Account No.');"> Account No.</li>
+            <li onClick="setFilter('Txn ID');"> Txn ID</li>
+            <li onClick="setFilter('Block No.');"> Block No.</li>
+        </ul>
+    </div>
+
+</div>
+
+<style>
+    .navbar .navbar-item .nav-item.user-profile-dropdown a.user .media img {
+        box-shadow: 0 0px 0px rgb(0 0 0 / 7%), 0 0px 0px rgb(0 0 0 / 14%);
+    }
+
+    .layout-px-spacing {
+        padding: 0 32px!important;
+        min-height: calc(100vh - 125px)!important;
+    }
+
+    .layout-spacing {
+        padding: 0px 10px 20px;
+    }
+
+    .layout-top-spacing {
+        margin-top: 20px;
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        flex-basis: 1200px;
+        overflow: auto;
+        max-width: 1200px;
+        margin: 0px auto;
+    }
+
+    *, ::after, ::before {
+        box-sizing: border-box;
+    }  
+
+    /* Hash의 길이가 다른 문제점을 해결하기 위해 문자당 width가 같은 monospace 계열 폰트를 사용
+    : Courier, Courier New, Lucida, Console, Monaco */
+    .monospace {
+        font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .alignLeft {
+        text-align: left;
+    }
+
+    .alignRight {
+        text-align: right;
+    }
+
+    .alignCenter {
+        text-align: center;
+    }
+
+    .textColor {
+        color: #d52e30;
+    }
+
+    .container,
+    .container-fluid,
+    .container-sm,
+    .container-md,
+    .container-lg,
+    .container-xl {
+        width: 100%;
+        padding: 0;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .nftTable {
+        flex-basis: 1200px;
+        max-width: 1200px;
+        min-height: 500px;
+        padding: 15px 30px;
+        position: relative;
+        box-sizing: border-box;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+        background-color: #fff;
+        color: black;
+        box-shadow: 0 0 40px 0 rgb(94 92 154 / 6%);
+    }
+
+    .cursorDefault {
+        cursor: default;
+    }
+
+    .cursorPointer {
+        cursor: pointer;
+    }
+
+    .cursorPointer:hover {
+        color: #d52e30;
+    }
+
+    /* table.dataTable tbody tr:hover {
+        color:#d52e30 !important;
+    } */
+
+    th,
+    td {
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    #nft-config thead .sorting,
+    #nft-config thead .sorting_asc,
+    #nft-config thead .sorting_desc {
+        background: none;
+        cursor: default;
+    }
+
+    .custom-context-menu {
+        position: absolute;
+        box-sizing: border-box;
+        height: 30px;
+        min-width: 100px;
+        background-color: #f9d781;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+    }
+
+    .custom-context-menu ul {
+        list-style: none;
+        padding: 0;
+        background-color: transparent;
+    }
+
+    .custom-context-menu li {
+        padding: 3px 5px;
+        cursor: pointer;
+        color: black;
+        font-weight: 400;
+    }
+
+    .custom-context-menu li:hover {
+        background-color: #f0f0f0;
+        border: 1px solid #f0f0f0;
+        border-radius: 0.25rem;
+    }
+
+    .image {
+        width: 20px;
+        height: 30px;
+        content: url("/images/copy.svg");
+    }
+
+    .form-control {
+        height: auto;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0px 0px rgb(194 213 255 / 62%);
+        border: 1px solid #bfc9d4;
+    }
+
+    .input-group>.form-control:not(:first-child),
+    .input-group>.custom-select:not(:first-child) {
+        border-left: 0;
+        border-right: 0;
+    }
+
+    .input-group .input-group-prepend .input-group-text {
+        border: 1px solid #bfc9d4;
+        background-color: #fff;
+    }
+
+    .deleteTextBtnArea {
+        display: flex;
+        background-color: white;
+        padding: 0px 10px;
+        width: auto;
+        height: auto;
+        border: 1px solid #bfc9d4;
+        color: #3b3f5c;
+        border-radius: 0px;
+        border-left: 0;
+        border-right: 0;
+    }
+
+    .deleteTextBtn {
+        justify-content: center;
+        align-self: center;
+        background-color: white;
+        width: 20px;
+        content: url("/images/close-button.svg");
+        cursor: pointer;
+    }
+
+    .searchDivider {
+        border-left: 1px solid #bfc9d4;
+        height: 50px;
+        /* height: calc(100%-10px); */
+        /* top:10px;
+        bottom:10px; */
+    }
+
+    .searchFilters {
+        display: grid;
+        grid-template-columns: 103px 20px;
+        background-color: white;
+        min-width: 133px;
+        height: auto;
+        border: 1px solid #bfc9d4;
+        color: #3b3f5c;
+        font-size: 15px;
+        letter-spacing: 1px;
+        padding: 12px 0px 12px 20px;
+        margin-left: 0px;
+        margin-right: 0px;
+        border-radius: 0px 6px 6px 0px;
+        border-left: 0;
+        cursor: pointer;
+    }
+
+    .searchFilters:hover {
+        color: #d52e30;
+    }
+
+    .searchFilterTitle {
+        text-align: center;
+    }
+
+    .arrowIcon {
+        align-self: center;
+        width: 15px;
+        height: 15px;
+        content: url("/images/arrow-down.png");
+    }
+
+    .filter-dropdown-menu {
+        position: absolute;
+        box-sizing: border-box;
+        min-width: 133px;
+        background-color: #ffffff;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+    }
+
+    .filter-dropdown-menu ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        background-color: transparent;
+    }
+
+    .filter-dropdown-menu li {
+        padding: 10px 30px;
+        cursor: pointer;
+        color: black;
+    }
+
+    .filter-dropdown-menu li:hover {
+        background-color: #f0f0f0;
+    }
+
+    /* 데이타테이블과 페이지네이션사이 간격 조정 */
+    table.dataTable {
+        margin: 0 auto 8px;
+        clear: both;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    /* 탑메뉴 active 이외 메뉴 호버시 아이콘 문자열 빨간색 처리 */
+    .topbar-nav.header nav#topbar ul.menu-categories li.menu>a:hover svg:not(.feather-chevron-down) {
+        color: #d52e30;
+        fill: #d52e30;
+    }
+
+    .topbar-nav.header nav#topbar ul.menu-categories li.menu a>div svg:not(.feather-chevron-down) {
+        stroke-width: 1.5px;
+        stroke: black;
+    }
+</style>

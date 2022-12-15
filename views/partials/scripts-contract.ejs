@@ -1,0 +1,329 @@
+<!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+<script src="/public/assets/js/sweetalerts/custom-sweetalert.js"></script>
+<script src="/public/assets/js/sweetalerts/promise-polyfill.js"></script>
+<script src="/public/assets/js/sweetalerts/sweetalert.js"></script>
+<script src="/public/assets/js/sweetalerts/sweetalert2.min.js"></script>
+<!-- <link href="/public/assets/css/sweetalerts/sweetalert.css" rel="stylesheet" type="text/css" /> -->
+<!-- <link href="/public/assets/css/sweetalerts/sweetalert2.min.css" rel="stylesheet" type="text/css" /> -->
+<!-- END PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+
+<script>
+    window.formData = '';
+    window.formData = getParameterObj();
+    $(document).ready(function () {        
+        
+        $('#uploadImgBtn').hover(function () {
+            $("#uploadImgBtn").attr('src', "/images/uploadBtn_after.svg")
+        }, function () {
+            $("#uploadImgBtn").attr('src', "/images/uploadBtn_before.svg")
+        });
+
+        drop();       
+    });
+
+    /**
+	 * fired when file is dragged over/dragged leave/dropped on the dropzone  
+	 * @event drop
+	 * @param 
+	 */
+    function drop() {
+        $('.dropzone')
+            .on("dragover", dragOver)
+            .on("dragleave", dragleave)
+            .on("drop", uploadFiles);      
+    };
+
+     /**
+	 * changing button color when drag over
+	 * @event dragOver
+	 * @param 
+	 */
+    function dragOver(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        if (e.type == "dragover") {
+            //console.log(" ~ dragOver ~ ", e.type)
+            $("#uploadImgBtn").attr('src', "/images/uploadBtn_after.svg");
+        }
+    };
+    
+     /**
+	 * changing button color when drag leave
+	 * @event dragOver
+	 * @param 
+	 */
+    function dragleave(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        if (e.type == "dragleave") {
+            //console.log(" ~ dragleave ~ ", e.type)
+            $("#uploadImgBtn").attr('src', "/images/uploadBtn_before.svg");
+        }
+    }
+
+    /**
+	 * checking if file is cej or not
+	 * @event uploadFiles
+	 * @param 
+	 */
+    function uploadFiles(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        $("#uploadImgBtn").attr('src', "/images/uploadBtn_after.svg");
+
+        e.dataTransfer = e.originalEvent.dataTransfer;
+        const files = e.target.files || e.dataTransfer.files;
+        if (files.length > 1) {
+            swal({
+                title: 'Only one file can be uploaded..',
+                padding: '2em'
+            })
+            return;
+        } else {
+            processBinFile(files[0], resetKeyName(e.target.id));
+        }
+
+        // if (files[0].type.match(/image.*/)) {
+        // 	$(e.target).css({
+        // 		"background-image": "url(" + window.URL.createObjectURL(files[0]) + ")",
+        // 		"outline": "none",
+        // 		"background-size": "100% 100%"
+        // 	});
+        //     imageFileProcessBinFile(files[0], resetKeyName(e.target.id));
+        // } else {
+        //       swal({
+        //          title: 'Its not image file.',
+        //          padding: '2em'
+        //       })    
+        // 	return;
+        // }
+
+        function resetKeyName(string) {
+            return string.indexOf('DropZone') == -1 ? string : string.slice(0, -8);
+        };
+    };
+
+    /**
+     * creating empty json structure for future use
+     * @property getParameterObj
+     * @type json
+     */
+    function getParameterObj() {
+        const result = {
+            'ownerPrikey': ''
+            , 'ownerPubkey': ''
+            , 'superPubkey': ''
+            , 'regSuperPrikey': ''
+            , 'regSuperPrikeyPw': ''
+            , 'regSuperPubkey': ''
+            , 'ownerPrikeyPw': ''
+            , 'ownerPrikeyPwChk': ''
+            , 'password': ''
+            , 'passwordCheck': ''
+            , 'tokenNumber': ''
+            , 'accountId': ''
+            , 'amount': ''
+            , 'fromAccount': ''
+            , 'toAccount': ''
+            , 'email': ''
+            , 'userId': ''
+            , 'accountNum': ''
+            , 'tokenType': ''
+            , 'tokenName': ''
+            , 'tokenSymbol': ''
+            , 'tokenAction': ''
+            , 'tokenSupply': ''
+            , 'decimalPoint': ''
+            , 'lockTx': ''
+            , 'lockTimeFrom': ''
+            , 'lockTimeTo': ''
+            , 'blackPkList': ''
+            , 'whitePkList': ''
+            , 'sendButton': ''
+        };
+
+        return result;
+    };
+
+    /**
+	 * checking file type and proceed to ajaxFun
+	 * @event processBinFile
+	 * @param 
+	 */
+    function processBinFile(file, output) {
+        const reader = new FileReader();
+        reader.onload = function () {
+
+            toolJsonCheck(file.name) ? ajaxFun({ 'jsonString': reader.result }, `${CONTRACTTOOLJSON}`) : '';
+            window.formData[output + 'File'] = file.name;
+            window.formData[output] = reader.result;
+        };
+        reader.readAsBinaryString(file);
+    }
+
+    function toolJsonCheck(string) {
+
+        //console.log("🚀 ~ file: scripts-wallet.ejs ~ line 89 ~ publicKeyCheck ~ string", string)
+        // if ((string.indexOf('xa') == -1 )     
+        // )
+        // {
+        //     swal({
+        //         title: "The file name should have 'xa'",
+        //         padding: '2em'
+        //     })
+
+        //     return false;      
+        // }  
+        if ((string.split('.')[1] != 'cej' ) && ( string.split('.')[1] != 'crd') 
+        )
+        {
+            swal({
+                title: "It's not a .cej/crd file",
+                padding: '2em'
+            })
+
+            return false;       
+
+        } else {
+            return true;
+        };
+    };
+
+     /**
+	 * sending image file to server by POST
+	 * @event ajaxFun
+	 * @param 
+	 */
+    function ajaxFun(formData, url, TYPE) {
+        //console.log("formData", formData);      
+        //console.log("url", url);             
+        const type = !TYPE ? 'POST' : TYPE;
+        $.ajax({
+            url,
+            type,
+            data: formData,
+            success: function (d) {
+                $("#uploadImgBtn").attr('src', "/images/uploadBtn_after.svg");
+                //console.log("🚀 ~ file: scripts-public.ejs ~ line 10 ~ ajaxFun ~ d", d)
+                msgFor(d);
+            },
+            error: function (request, status, error) {
+                console.log("🚀 ~ file: scripts-public.ejs ~ line 13 ~ ajaxFun ~ request, status, error", request, status, error)
+            }
+        });
+
+        /**
+         * displaying response message from server
+         * @event msgFor
+         * @param 
+         */
+        function msgFor(d) {
+            const CHECK_ACCOUNT = `${CHECKACCOUNT}`;
+            
+            const errCode = d.data.errorCode || '';
+            const msg = d.data.contents.msg || '';
+
+            clearText();
+
+            if (d.data && url != CHECK_ACCOUNT) {
+                addMsg(msg);
+
+                $('#cej').html(
+                    `<h4 class="msg">result ${JSON.stringify(d)}</h4>`);
+
+                resetText('Or drag and drop your file.');
+            } else if (errCode != 3000 && url == CHECK_ACCOUNT) {
+               // userInfoTable(d.data.contents.uAccountInfo);
+                resetText();
+            } else if (errCode == 3000 && url == CHECK_ACCOUNT) {
+                addMsg(msg);
+            } else {
+                console.error('ajaxFun() error');
+            };
+
+        };
+
+        function clearText() {
+            $('#notifiMessage').html('');
+        };
+
+        function addMsg(msg) {
+            $('#notifiMessage').html(`<small><code>${msg}</code></small>`);
+        };
+
+        function resetText(msg) {
+            $('#toolJsonDropZone').html(`${msg}`);
+        };
+    };
+
+    // function openBinFile(output) {
+    //     const input = document.createElement("input");
+    //     input.type = "file";
+    //     input.accept = '.cej';
+    //     input.onchange = function (event) {
+    //         processBinFile(event.target.files[0], output);
+    //     };
+    //     input.click();
+    // };    
+    
+    // function imageFileProcessBinFile(file, output) {
+    //     const reader = new FileReader();
+    //     reader.onload = function () {
+
+    //         ajaxFun({ 'jsonImage': reader.result }, `${IMAGEBASE64STORE}`);
+    //         window.formData[output + 'File'] = file.name;
+    //         window.formData[output] = reader.result;
+    //     };
+    //     reader.readAsBinaryString(file);
+    // }
+
+    // function userInfoTable(data, data2) {
+    //     if (data) {
+    //         const account_id = data.account_id || 0;
+    //         const account_num = slice(data.account_num) || 0;
+    //         const blk_num = data.blk_num || 0;
+    //         const subnet_id = data.subnet_id || 0;
+    //         const owner_pk = data.owner_pk || 0;
+    //         const super_pk = data.super_pk || 0;
+    //         const banlance = data2.errorCode == 0 ? data2.contents.token[0].cfmdBal : data2.contents.msg;
+
+    //         $('#detail').html(`
+    //                         <tr>
+    //                             <td><strong>Account&nbspId</strong></td>
+    //                             <td>${account_id}</td>
+    //                         </tr>
+    //                         <tr>
+    //                             <td><strong>Account&nbspNumber</strong></td>
+    //                             <td>${account_num}</td>
+    //                         </tr>
+    //                         <tr>
+    //                             <td><strong>Blk&nbspNumber</strong></td>
+    //                             <td>${blk_num}</td>
+    //                         </tr>
+    //                         <tr>
+    //                             <td><strong>P2p&nbspAddress</strong></td>
+    //                             <td>${subnet_id}</td>
+    //                         </tr>
+    //                         <tr>
+    //                             <td><strong>Owner&nbspPublic&nbspKey</strong></td>
+    //                             <td>${owner_pk}</td>
+    //                         </tr>
+    //                         <tr>
+    //                             <td><strong>Super&nbspPublic&nbspKey</strong></td>
+    //                             <td>${super_pk}</td>
+    //                         </tr>
+    //                         <tr>
+    //                             <td><strong>Banlance</strong></td>
+    //                             <td>${banlance}</td>
+    //                         </tr>
+	// 		`);
+    //     } else {
+    //         console.error('userInfoTable error');
+    //     };
+    // };
+
+
+</script>

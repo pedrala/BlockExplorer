@@ -1,0 +1,92 @@
+<script>
+	$(document).ready(function () {
+
+		getNftList();
+
+	});
+
+	/**
+	 * rendering datatable for nft data
+	 * @event getNftList
+	 * @param
+	 */
+	function getNftList() {
+
+		const table = $('#nft-config').DataTable({
+
+			ajax: {
+				url: `${URL}${NFT_LIST}`,
+				dataSrc: 'result',
+				// success: function (data) {
+				// 		console.log("getNftList:" + JSON.stringify(data.result) + "\n");
+				// },
+				error: function (request, status, error) {
+					console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				},
+			},
+		
+			"columnDefs": [
+				{ targets: [0, 1, 2, 3], className: 'dt-left cursorPointer' },			
+				{ targets: [7], className: 'dt-right'},
+				{ targets: [4, 5, 8], visible: false },	
+				{ targets: [6], className: 'alignProgressTd' },
+				{
+					"render": function (data, type, row, meta) {
+						if(!isNaN(data))
+						return '<span><progress value="' + data + '" max="100"></progress></span><span style="margin-left:5px">' + data + '%</span>';
+						else
+						return '<span><progress value="' + 0 + '" max="100"></progress></span><span style="margin-left:5px">' + 0 + '%</span>';
+					},
+					"targets": 6
+				},
+			],
+			
+			"columns": [
+				{ "data": "name" },
+				{ "data": "symbol" },
+				{ "data": "nftName" },
+				{ "data": "shortenHash" },
+				{ "data": "actionTarget" },
+				{ "data": "scAction" },
+				{ "data": "ratio" },
+				{ "data": "totalCnt" },
+				{ "data": "scHash" },
+			],
+			"processing": false,
+			"serverSide": false,
+			"searching": true,
+			"language": {			
+				searchPlaceholder: "Search by Name/Symbol"
+			},
+			"ordering": false,
+			"retrieve": false,
+			"paging": true,
+			"info": true,
+			"stripeClasses": [],
+			"lengthChange": false,
+			"pageLength": 25,
+			"order": [[0, 'desc']]
+		});
+
+		//move to NFT Detail page
+		$('#nft-config tbody').on('click', 'tr', function () {
+			const target = $(event.target);
+			$td = target.closest('td');
+			const headerName = $td.closest('table').find('th').eq($td.index())[0].innerText
+
+			const data = table.row(this).data();		
+
+			if ( headerName == 'Name' || headerName == 'Symbol') {
+				window.location.href = URL + "/token-details/" + data.actionTarget;
+			}
+			else if (headerName == 'NFT Name') {
+				window.location.href = URL + "/nft-details/" + data.scAction;
+			}
+			else if (headerName == 'Contract Address') {
+				window.location.href = URL + "/trans-hash-details/" + data.scHash;
+			}
+
+		});
+	};
+
+</script>

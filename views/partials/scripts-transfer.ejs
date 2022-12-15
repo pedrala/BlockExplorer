@@ -1,0 +1,225 @@
+<script>
+	$(document).ready(function () {
+	
+		getTransferInfo();
+
+		// setInterval(() => {
+		// 	getTransferInfo();
+		// }, 1000 * 4);	
+	});
+
+	function getTransferInfo() {
+		$.ajax({
+			type: "get",
+			url: `${URL}${TRANSFER_INFO}`,
+			success: function (data) {
+				//console.log("getTransferInfo:" + JSON.stringify(data.data) + "\n");
+
+				// display response data from API
+				dataTextView(data.data);
+
+			},
+			error: function (request, status, error) {
+				//console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+			},
+		});
+	};
+
+	// loading main page data
+	function dataTextView(data) {
+
+		const tokenTotalCnt = new Intl.NumberFormat().format(data.tAccountTotalCnt)
+		const token24HCnt = new Intl.NumberFormat().format(data.tAccount24hCnt)
+
+		//Total txsCnt
+		$('#tokenTotalCnt').text(tokenTotalCnt);
+		$('#token24HCnt').text(token24HCnt);
+
+		//Transactions
+		getTransferList();
+	};
+
+	/**
+	 * rendering datatable for TransferList data
+	 * @event getTransferList
+	 * @param
+	 */
+	function getTransferList() {
+
+		const table = $('#transfer-config').DataTable({		
+			ajax: {
+				url: `${URL}${TRANSFER_LIST}`,
+				dataSrc: 'result',
+				// success: function (data) {
+				// 	//console.log("getTransferList:" + JSON.stringify(data.result) + "\n");
+				// },
+				error: function (request, status, error) {
+					console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				},
+			},
+			"createdRow": function (row, data, index) { //index = row
+				$('td', row).eq(0).attr('id', 'transfer-' + index + '-hash');
+				$('td', row).eq(1).attr('id', 'transfer-' + index + '-blkNo');
+				$('td', row).eq(2).attr('id', 'transfer-' + index + '-from');
+				$('td', row).eq(3).attr('id', 'transfer-' + index + '-to');
+				$('td', row).eq(0).attr('val', data.hash);
+				$('td', row).eq(1).attr('val', data.blkNum);
+				$('td', row).eq(2).attr('val', data.fromAccountHexa);
+				$('td', row).eq(3).attr('val', data.toAccountHexa);
+				$('td', row).eq(6).attr('title', data.bpNo);
+			},
+			//"data": data.result,
+			"columnDefs": [
+				{ targets: [0], className: 'alignLeft cursorPointer' },
+				{ targets: [1, 2, 3], className: 'alignLeft cursorPointer' },
+				{ targets: [4], className: 'alignLeft' },
+				{ targets: [5, 6], className: 'alignLeft' },
+				{ targets: [7, 8, 9, 10], visible: false },
+				{
+					"render": function (data, type, row) {
+						return "#" + data
+					},
+					"targets": 1
+				},
+				{
+					"render": function (data, type, row) {
+						if (row.type == 'TRANSFER') {						
+							return data + ' ' + `<img style="width:16px; height:16px" src='${imgURL}:80/mainnetAction/${row.c_action}.svg' ></img>`
+						}
+						else {
+							return data
+						}
+					},
+					"targets": 4
+				}				
+			],
+			"columns": [
+				{ "data": "shortenHash" },
+				{ "data": "blkNum" },
+				{ "data": "fromAccountHexa" },
+				{ "data": "toAccountHexa" },
+				{ "data": "amount" },
+				{ "data": "type" },
+				{ "data": "bps" },
+				{ "data": "fromAccountDecimal" },
+				{ "data": "toAccountDecimal" },
+				{ "data": "tokenAction" },
+				{ "data": "hash" },
+			],
+			"searching": false,
+			"ordering": false,
+			"paging": true,
+			"info": true,
+			"stripeClasses": [],
+			"lengthChange": false,
+			"pageLength": 20,
+			"order": [[0, 'desc']]
+		});
+
+		setInterval(function () {
+			//console.log("===============transferlist=reload===============")
+			table.ajax.reload();
+		}, 30000);
+
+		//move to Detail page
+		$('#transfer-config tbody').on('click', 'tr', function (event) {
+			const target = $(event.target);
+			$td = target.closest('td');
+			const headerName = $td.closest('table').find('th').eq($td.index())[0].innerText
+
+			const data = table.row(this).data();
+
+			if (headerName == 'Block No') {
+				window.location.href = URL + "/block-details/" + data.blkNum;
+			}
+			else if (headerName == 'From') {
+
+				window.location.href = URL + "/account-details/" + data.fromAccountDecimal;
+			}
+			else if (headerName == 'To') {
+
+				window.location.href = URL + "/account-details/" + data.toAccountDecimal;
+			}
+			// else if (headerName == 'Action') {
+
+			// 	window.location.href = URL + "/token-details/" + data.tokenAction;
+			// }
+			else if (headerName == 'Txn Hash') {
+				window.location.href = URL + "/trans-hash-details/" + data.hash;
+			}
+
+		});
+
+		//after rendering datatable, bind unique id on each row
+		$('#transfer-config').on('draw.dt', function () {
+			let info = table.page.info();
+			let rows = table.rows({ page: 'current' }).data();
+			transferIdBinding(table.page.info().page, rows);
+		});
+
+		//after clicking pagination, bind unique id on each row
+		$('#transfer-config').on('page.dt', function () {
+			let info = table.page.info();
+			//console.log('Showing page: ' + info.page + ' of ' + info.pages);
+
+			$('#transfer-config').on('draw.dt', function () {
+				let info = table.page.info();
+				let rowNo = []
+				let rowStartNo = info.page * 20;
+				let rowEndNo = info.page * 20 + 20;
+				for (let i = rowStartNo; i < rowEndNo; i++) {
+					rowNo.push(i);
+				}
+				//console.log("rowNoArr:" + JSON.stringify(rowNo))
+				let rows = table.rows(rowNo).data();
+
+				transferIdBinding(table.page.info().page, rows);
+			});
+		});
+
+		 /**
+		 * creating context menu(mouse right click) on each page of transfer datatable
+		 * @event transferIdBinding
+		 * @param {String} msg A description of...
+		 */   
+		function transferIdBinding(pageNo, rows) {
+ 			// block default context menu
+			for (let i = 0; i < rows.count(); i++) {
+				// block default context menu
+				//console.log('id: ' + (i + parseInt(pageNo * 20)));
+				let id = i + parseInt(pageNo * 20);
+				document.getElementById("transfer-" + id + "-hash").addEventListener("contextmenu", function (e) { e.preventDefault(); });
+				document.getElementById("transfer-" + id + "-blkNo").addEventListener("contextmenu", function (e) { e.preventDefault(); });
+				document.getElementById("transfer-" + id + "-from").addEventListener("contextmenu", function (e) { e.preventDefault(); });
+				document.getElementById("transfer-" + id + "-to").addEventListener("contextmenu", function (e) { e.preventDefault(); });
+				
+				//display custom context menu
+				$("#transfer-" + id + "-hash").mousedown(function (ev) {					
+					if (ev.which == 3) {
+						createContextMenu("#transfer-" + id + "-hash");
+					}
+				});
+
+				$("#transfer-" + id + "-blkNo").mousedown(function (ev) {					
+					if (ev.which == 3) {
+						createContextMenu("#transfer-" + id + "-blkNo");
+					}
+				});
+
+				$("#transfer-" + id + "-from").mousedown(function (ev) {					
+					if (ev.which == 3) {
+						createContextMenu("#transfer-" + id + "-from");
+					}
+				});
+
+				$("#transfer-" + id + "-to").mousedown(function (ev) {				
+					if (ev.which == 3) {
+						createContextMenu("#transfer-" + id + "-to");
+					}
+				});
+
+			}
+		}
+	};
+
+</script>

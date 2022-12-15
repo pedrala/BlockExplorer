@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body class="sidebar-noneoverflow">
+    <!-- Wrapper-->
+    <div class="wrapper">
+
+        <!-- Header-->
+        <%- include('../partials/top') %>
+        <!-- End header-->
+
+        <!-- Main content-->
+        <section class="content">        
+            <%- body %>
+        </section>
+        
+        <!-- End main content-->
+        <%- include('../partials/footer') %>
+    </div>
+    <!-- End wrapper-->
+    <%- include('../partials/scripts-public') %>
+    <%- include('../partials/scripts-common') %>
+    <%- include('../partials/scripts-transHashDetails') %>
+   
+</body>
+
+</html>
+
+<style>
+    .content {
+        margin-top: 70px;
+        min-height: calc(100vh - 70px);
+    }
+</style>

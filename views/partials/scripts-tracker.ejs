@@ -1,0 +1,109 @@
+<script>
+	$(document).ready(function () {
+	
+		getTrackerInfo();
+
+		// setInterval(() => {
+		// 	getTrackerInfo();
+		// }, 1000 * 4);	
+	});
+
+	function getTrackerInfo() {
+		$.ajax({
+			type: "get",
+			url: `${URL}${TRACKER_INFO}`,
+			success: function (data) {
+				//console.log("getTrackerInfo:" + JSON.stringify(data.data) + "\n");
+
+			    // display response data from API
+				dataTextView(data.data);
+
+
+			},
+			error: function (request, status, error) {
+				//console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+			},
+		});
+	};
+
+
+	// loading main page data
+	function dataTextView(data) {
+
+		const tokenTotalCnt = new Intl.NumberFormat().format(data.tAccountTotalCnt)
+		const token24HCnt = new Intl.NumberFormat().format(data.tAccount24hCnt)
+
+		//Total txsCnt
+		$('#tokenTotalCnt').text(tokenTotalCnt);
+		$('#token24HCnt').text(token24HCnt);
+
+		//Transactions
+		getTrackerList();
+	};
+
+	/**
+	 * rendering datatable for TrackerList data
+	 * @event getTrackerList
+	 * @param
+	 */
+	function getTrackerList() {
+
+		const table = $('#tracker-config').DataTable({		
+			ajax: {
+				url: `${URL}${TRACKER_LIST}`,
+				dataSrc: 'result',
+				// success: function (d) {
+				// 	console.log("getTrackerList:" + JSON.stringify(d.result) + "\n");						
+				// },
+				error: function (request, status, error) {
+					console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				},
+			},
+			"createdRow": function (row, data, index) { //index = row						
+				$('td', row).eq(5).attr('title', data.bpNo);
+			},
+			//"data": data.result,
+			"columnDefs": [
+				{ targets: [0, 1, 4], className: 'alignLeft cursorPointer' },
+				{ targets: [2, 3, 5], className: 'alignLeft' },
+				{ targets: [6, 7], visible: false }				
+			],
+			"columns": [
+				{ "data": "name" },
+				{ "data": "symbol" },
+				{ "data": "accountNumHexa" },
+				{ "data": "marketSupply" },
+				{ "data": "actionO" },
+				{ "data": "bps" },
+				{ "data": "accountNumDecimal" },
+				{ "data": "action" },
+			],
+			"searching": false,
+			"ordering": false,
+			"paging": true,
+			"info": true,
+			"stripeClasses": [],
+			"lengthChange": false,
+			"pageLength": 20,
+			"order": [[0, 'desc']]
+		});
+
+		//move to Detail page
+		$('#tracker-config tbody').on('click', 'tr', function (event) {
+			const target = $(event.target);
+			$td = target.closest('td');
+			const headerName = $td.closest('table').find('th').eq($td.index())[0].innerText
+
+			const data = table.row(this).data();
+
+			if (headerName == 'Name' ||
+				headerName == 'Symbol' ||
+				headerName == 'Action') {
+
+				window.location.href = URL + "/token-details/" + data.actionO;
+
+			}
+		});	
+	};
+
+</script>

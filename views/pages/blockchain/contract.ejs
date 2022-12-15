@@ -1,0 +1,201 @@
+<!-- NAVBAR HOME-->
+<%- include('../../pages/navBar/navBarContract') %>
+
+<!--  BEGIN MAIN CONTAINER  -->
+<div class="main-container" id="container">
+
+    <!--  BEGIN OVERLAY  -->
+    <div class="overlay"></div>
+    <div class="cs-overlay"></div>
+    <div class="search-overlay"></div>
+    <!-- END OVERLAY -->
+
+    <!--  BEGIN CONTENT PART  -->
+    <!--Contract-->
+    <div class="layout-px-spacing">
+
+        <div class="row">
+            <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 col-12 layout-spacing">
+
+                <div class="contract-container">
+                    <div>
+                        <h3 class="section-title">Upload Contract</h3>
+                    </div>
+
+                    <div class="contentarea">
+                        <div class="dropzone">
+                            <div class="areabtn" onclick="openBinFile(this.name)">
+                                <img alt="logo" id="uploadImgBtn" src="/images/uploadBtn_before.svg">
+                            </div>
+                            <div id="toolJsonDropZone">
+                                Or drag and drop your contract file(*.cej/*.crd)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="resultarea">
+                        <h3 id='notifiMessage'></h3>
+                        <pre id="cej"></pre>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--  END CONTENT PART  -->
+</div>
+
+<style>
+    .navbar .navbar-item .nav-item.user-profile-dropdown a.user .media img {
+        box-shadow: 0 0px 0px rgb(0 0 0 / 7%), 0 0px 0px rgb(0 0 0 / 14%);
+    }
+
+    .layout-px-spacing {
+        padding: 0 32px!important;
+        min-height: calc(100vh - 125px)!important;
+    }
+
+    .layout-spacing {
+        padding: 0px 10px 20px;
+    }
+
+    .layout-top-spacing {
+        margin-top: 20px;
+    }
+
+    .row {
+        justify-content: center;
+        margin:100px 0 30px 0;
+        display: flex;
+        flex-wrap: wrap;       
+        overflow: auto;        
+    }
+
+    .contract-container {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        flex-basis: 1200px;
+        height: 100%;
+        align-items: stretch;
+        text-align: center;
+        background-color: #fff;
+        background-clip: border-box;
+        padding: 20px 20px;
+        box-sizing: border-box;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+        box-shadow: 0 0 40px 0 rgb(94 92 154 / 6%);
+    }
+
+    .section-title {
+        font-size: 26px;
+        color: #3b3f5c;
+        font-weight: 600;
+        letter-spacing: 1.30px;
+        line-height: 40px;
+        margin: 20px;
+    }
+
+    .contentarea {
+        margin: 20px 50px;
+    }
+
+    .resultarea {
+        margin: 20px 50px;
+    }
+
+    .areabtn {
+        display: flex;
+        flex-direction: row;
+        justify-content: left;
+        margin-bottom: 10px;
+    }
+
+    .choosebtn {
+        z-index: 6;
+        display: block;
+        height: auto;
+        padding: 10px 16px;
+        line-height: 1.25;
+        background-color: #f4e6e6;
+        color: #d52e30;
+        border: 1px solid #e0e6ed;
+        box-sizing: border-box;
+    }
+
+    .dropzone {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        outline: 2px dashed #d52e30;
+        outline-offset: -10px;
+        text-align: center;
+        transition: all .15s ease-in-out;
+        width: 100%;
+        height: 400px;
+        background-color: rgb(238, 238, 245);
+        /* background-color: rgb(227, 227, 228); */
+        margin-top: 20px;
+    }
+
+    #notifiMessage {
+        display: flex;
+        flex-direction: row;
+        justify-content: left;
+        margin-bottom: 10px;
+    }
+
+    #cej {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: left;
+        margin-bottom: 10px;
+    }
+
+    .msg {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: left;
+        font-weight: 300;
+        font-size: 15px;
+    }
+
+    #uploadImgBtn {
+        width: 60px;
+        height: 60px;
+        cursor: pointer;
+    }
+
+    .cursorPointer {
+        cursor: pointer;
+    }
+
+    .swal2-popup .swal2-title {
+        display: block;
+        position: relative;
+        max-width: 100%;
+        margin: 0 0 0.4em;
+        padding: 0;
+        color: #595959;
+        font-size: 18px;
+        font-weight: 600;
+        text-align: center;
+        text-transform: none;
+        word-wrap: break-word;
+    }
+
+    /* 탑메뉴 active 이외 메뉴 호버시 아이콘 문자열 빨간색 처리 */
+    .topbar-nav.header nav#topbar ul.menu-categories li.menu>a:hover svg:not(.feather-chevron-down) {
+        color: #d52e30;
+        fill: #d52e30;
+    }
+
+    .topbar-nav.header nav#topbar ul.menu-categories li.menu a>div svg:not(.feather-chevron-down) {
+        stroke-width: 1.5px;
+        stroke: black;
+    }
+</style>

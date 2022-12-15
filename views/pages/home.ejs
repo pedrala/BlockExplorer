@@ -1,0 +1,816 @@
+<!-- NAVBAR HOME-->
+<%- include('../pages/navBar/navBarHome') %>
+
+<!--  BEGIN MAIN CONTAINER  -->
+<div class="main-container">
+
+    <!--  BEGIN OVERLAY  -->
+    <div class="overlay"></div>
+    <div class="cs-overlay"></div>
+    <div class="search-overlay"></div>
+    <!-- END OVERLAY -->
+
+    <!--  BEGIN CONTENT PART  -->
+    <div class="layout-px-spacing">
+        <div class="row layout-top-spacing">          
+            <!--  SEARCH BAR  -->
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                <!-- Search Bar -->
+                <%- include('../pages/navBar/searchBar') %>    
+            </div>        
+            
+            <!--Summary Table-->
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                <div class="summary-container">
+                    <div class="summary-priceGridbox">
+                        <div class="icon-box">
+                            <img style="width:50px;" src="/images/icon-1.svg">
+                        </div>
+                        <div class="title-box1">
+                            Price(USD)
+                        </div>
+                        <div class="value-box">
+                            $<span id="priceUsd"></span>
+                        </div>
+                    </div>
+
+                    <div class="summary-bigNoGridbox">
+                        <div class="icon-box">
+                            <img style="width:50px;" src="/images/icon-2.svg">
+                        </div>
+                        <div class="title-box1">
+                            Total Volume
+                        </div>
+                        <div class="value-box">
+                            <span id="totalVol"></span>
+                        </div>
+                    </div>
+
+                    <div class="summary-bigNoGridbox">
+                        <div class="icon-box">
+                            <img style="width:50px;" src="/images/icon-3.svg">
+                        </div>
+                        <div class="title-box1">
+                            Market Supply
+                        </div>
+                        <div class="value-box">
+                            <span id="marketSupply"></span>
+                        </div>
+                    </div>
+
+                    <div class="summary-bigNoGridbox">
+                        <div class="icon-box">
+                            <img style="width:50px;" src="/images/icon-4.svg">
+                        </div>
+                        <div class="title-box1">
+                            Trading Volume
+                        </div>
+                        <div class="value-box">
+                            <span id="tradingVol"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+        
+            <!--Total Users-->
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="total-container">
+                    <div class="tot-data-title">
+                        <div class="title-box1">
+                            <span style="margin:0 6px 0 0">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M9 13C11.2091 13 13 11.2091 13 9C13 6.79086 11.2091 5 9 5C6.79086 5 5 6.79086 5 9C5 11.2091 6.79086 13 9 13Z"
+                                        stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path
+                                        d="M3 20V18.6667C3 17.9594 3.42143 17.2811 4.17157 16.781C4.92172 16.281 5.93913 16 7 16H11C12.0609 16 13.0783 16.281 13.8284 16.781C14.5786 17.2811 15 17.9594 15 18.6667V20"
+                                        stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M19 10V16M16 13H22H16Z" stroke="black" stroke-width="1.5"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                            Total Users
+                        </div>
+                    </div>
+                    <div class="tot-data-item-left" style="align-self:flex-end">
+                        <span class="title-box2">Total</span>
+                    </div>
+                    <div class="tot-data-item-right" style="align-self:flex-end">
+                        <span class="title-box2">24H</span>
+                    </div>
+
+                    <div class="tot-data-item-left" style="align-self:center">
+                        <span class="value-box1" id="totUserAccounts"></span>
+                    </div>
+
+                    <div class="tot-data-item-right" style="align-self:center">
+                        <span class="value-box2">+</span>
+                        <span class="value-box2" id="userAccounts24h">
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!--Total Tokens-->
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="total-container">
+                    <div class="tot-data-title">
+                        <div class="title-box1">
+                            <span style="margin:0 6px 0 0">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M22.2255 15.9755C22.2255 16.722 21.7402 17.5107 20.7177 18.1508C19.7057 18.7845 18.2609 19.2009 16.6258 19.2009C14.9907 19.2009 13.546 18.7845 12.5339 18.1508C11.5114 17.5107 11.0261 16.722 11.0261 15.9755C11.0261 15.2289 11.5114 14.4402 12.5339 13.8001C13.546 13.1664 14.9907 12.75 16.6258 12.75C18.2609 12.75 19.7057 13.1664 20.7177 13.8001C21.7402 14.4402 22.2255 15.2289 22.2255 15.9755Z"
+                                        fill="white" stroke="black" stroke-width="1.5" />
+                                    <path
+                                        d="M22.2255 12.9755C22.2255 13.722 21.7402 14.5107 20.7177 15.1508C19.7057 15.7845 18.2609 16.2009 16.6258 16.2009C14.9907 16.2009 13.546 15.7845 12.5339 15.1508C11.5114 14.5107 11.0261 13.722 11.0261 12.9755C11.0261 12.2289 11.5114 11.4402 12.5339 10.8001C13.546 10.1664 14.9907 9.75 16.6258 9.75C18.2609 9.75 19.7057 10.1664 20.7177 10.8001C21.7402 11.4402 22.2255 12.2289 22.2255 12.9755Z"
+                                        fill="white" stroke="black" stroke-width="1.5" />
+                                    <path d="M22.5 17V6M10.5 17V6.78571" stroke="black" />
+                                    <path
+                                        d="M22.2253 9.97546C22.2253 10.722 21.74 11.5107 20.7175 12.1508C19.7054 12.7845 18.2607 13.2009 16.6256 13.2009C14.9905 13.2009 13.5457 12.7845 12.5337 12.1508C11.5112 11.5107 11.0259 10.722 11.0259 9.97546C11.0259 9.22894 11.5112 8.44023 12.5337 7.80007C13.5457 7.16643 14.9905 6.75 16.6256 6.75C18.2607 6.75 19.7054 7.16643 20.7175 7.80007C21.74 8.44023 22.2253 9.22894 22.2253 9.97546Z"
+                                        fill="white" stroke="black" stroke-width="1.5" />
+                                    <path
+                                        d="M22.2255 6.97546C22.2255 7.72198 21.7402 8.51069 20.7177 9.15085C19.7057 9.78449 18.2609 10.2009 16.6258 10.2009C14.9907 10.2009 13.546 9.78449 12.5339 9.15085C11.5114 8.51069 11.0261 7.72198 11.0261 6.97546C11.0261 6.22894 11.5114 5.44023 12.5339 4.80007C13.546 4.16643 14.9907 3.75 16.6258 3.75C18.2609 3.75 19.7057 4.16643 20.7177 4.80007C21.7402 5.44023 22.2255 6.22894 22.2255 6.97546Z"
+                                        fill="white" stroke="black" stroke-width="1.5" />
+                                    <circle cx="7.46012" cy="14.5398" r="5.71012" fill="white" stroke="black"
+                                        stroke-width="1.5" />
+                                    <path d="M18.25 5.25H15.25V6.9375M15.25 8.625V6.9375M15.25 6.9375H17.1591"
+                                        stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path
+                                        d="M8.95093 12.3865H6.52148V14.5398M6.52148 16.6932V14.5398M6.52148 14.5398H8.0675"
+                                        stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                            Total Tokens
+                        </div>
+                    </div>
+                    <div class="tot-data-item-left" style="align-self:flex-end">
+                        <span class="title-box2">Total</span>
+                    </div>
+                    <div class="tot-data-item-right" style="align-self:flex-end">
+                        <span class="title-box2">24H</span>
+                    </div>
+
+                    <div class="tot-data-item-left" style="align-self:center">
+                        <span class="value-box1" id="totTokenAccounts"></span>
+                    </div>
+
+                    <div class="tot-data-item-right" style="align-self:center">
+                        <span class="value-box2">+</span>
+                        <span class="value-box2" id="tokenAccounts24h">
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!--Total Blocks-->
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="total-container">
+                    <div class="tot-data-title">
+                        <div class="title-box1">
+                            <span style="margin:0 6px 0 0">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 3L20 7.5V16.5L12 21L4 16.5V7.5L12 3Z" stroke="black" stroke-width="1.5"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M12 12L20 7.5" stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M12 12V21" stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M12 12L4 7.5" stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M16 5.25L8 9.75" stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                            Total Blocks
+                        </div>
+                    </div>
+                    <div class="tot-data-item-left" style="align-self:flex-end">
+                        <span class="title-box2">Total </span>
+                    </div>
+                    <div class="tot-data-item-right" style="align-self:flex-end">
+                        <span class="title-box2">24H </span>
+                    </div>
+                    <div class="tot-data-item-left" style="align-self:center">
+                        <span class="value-box1" id="totalBlk"> </span>
+                    </div>
+                    <div class="tot-data-item-right" style="align-self:center">
+                        <span class="value-box2" id="dailyBlkPlus">+</span>
+                        <span class="value-box2" id="dailyBlk"> </span>
+                    </div>
+                </div>
+            </div>
+
+            <!--Total Txns-->
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="total-container">
+                    <div class="tot-data-title">
+                        <div class="title-box1">
+                            <span style="margin:0 6px 0 0">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M8 5H6C5.46957 5 4.96086 5.21071 4.58579 5.58579C4.21071 5.96086 4 6.46957 4 7V19C4 19.5304 4.21071 20.0391 4.58579 20.4142C4.96086 20.7893 5.46957 21 6 21H11.697"
+                                        stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M18 14V18H22" stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path
+                                        d="M18 11V7C18 6.46957 17.7893 5.96086 17.4142 5.58579C17.0391 5.21071 16.5304 5 16 5H14"
+                                        stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path
+                                        d="M12 3H10C8.89543 3 8 3.89543 8 5C8 6.10457 8.89543 7 10 7H12C13.1046 7 14 6.10457 14 5C14 3.89543 13.1046 3 12 3Z"
+                                        stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path
+                                        d="M18 22C20.2091 22 22 20.2091 22 18C22 15.7909 20.2091 14 18 14C15.7909 14 14 15.7909 14 18C14 20.2091 15.7909 22 18 22Z"
+                                        stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M8 11H12" stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M8 15H11" stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                            Total Transactions
+                        </div>
+                    </div>
+
+                    <div class="tot-data-item-left" style="align-self:flex-end">
+                        <span class="title-box2">Total </span>
+                    </div>
+                    <div class="tot-data-item-right" style="align-self:flex-end">
+                        <span class="title-box2">24H </span>
+                    </div>
+                    <div class="tot-data-item-left" style="align-self:center">
+                        <span class="value-box1" id="totalTxns"> </span>
+                    </div>
+                    <div class="tot-data-item-right" style="align-self:center">
+                        <span class="value-box2">+</span>
+                        <span class="value-box2" id="dailyTxns"> </span>
+                    </div>
+                </div>
+            </div>           
+        
+            <!--Daily Txns(Apex Chart)-->
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+
+                <div class="widget widget-one_hybrid">
+                    <div class="widget-heading">
+                        <div class="w-title" style="margin:0px 0px 0px 20px">
+                            <span class="title-box1">Daily Transactions</span>
+                        </div>
+                    </div>
+                    <div class="widget-content">
+                        <div id="s-line" style="margin:0px 20px">
+                        </div>
+                    </div>
+                </div>
+            </div>         
+            
+            <!--Latest Blocks-->
+            <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                <div class="blockTable">
+
+                    <div class="widget-heading" style="margin:15px 15px">
+                        <div class="table-title">
+                            <span class="title-box1">Latest Blocks</span>
+                            <span class="blkMore" style="font-weight:bold; color:#616568" id="goToBlk">More ></span>
+                        </div>
+                    </div>
+
+                    <div id="block-config_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+
+                        <div class="table-responsive">
+                            <table id="block-main" class="table dt-table-hover dataTable" style="width:100%"
+                                role="grid" aria-describedby="block-config_info">
+                                <thead>
+                                    <tr>
+                                        <th style="width:90px">
+                                            <div class="th-content">Block</div>
+                                        </th>
+                                        <th class="th-agecontent" style="width:156px">
+                                            <span id="ageTimeBlk">Age
+                                            </span>
+                                            <span role="img" aria-label="retweet" class="anticon anticon-retweet"
+                                                style="vertical-align: 0px; margin-left: 10px;">
+                                                <svg viewBox="0 0 1024 1024" focusable="false" data-icon="retweet"
+                                                    width="1em" height="1em" fill="currentColor" aria-hidden="true">
+                                                    <path
+                                                        d="M136 552h63.6c4.4 0 8-3.6 8-8V288.7h528.6v72.6c0 1.9.6 3.7 1.8 5.2a8.3 8.3 0 0011.7 1.4L893 255.4c4.3-5 3.6-10.3 0-13.2L749.7 129.8a8.22 8.22 0 00-5.2-1.8c-4.6 0-8.4 3.8-8.4 8.4V209H199.7c-39.5 0-71.7 32.2-71.7 71.8V544c0 4.4 3.6 8 8 8zm752-80h-63.6c-4.4 0-8 3.6-8 8v255.3H287.8v-72.6c0-1.9-.6-3.7-1.8-5.2a8.3 8.3 0 00-11.7-1.4L131 768.6c-4.3 5-3.6 10.3 0 13.2l143.3 112.4c1.5 1.2 3.3 1.8 5.2 1.8 4.6 0 8.4-3.8 8.4-8.4V815h536.6c39.5 0 71.7-32.2 71.7-71.8V480c-.2-4.4-3.8-8-8.2-8z">
+                                                    </path>
+                                                </svg>
+                                            </span>
+                                        </th>
+                                        <th style="width:70px">
+                                            <div class="th-content">Txns</div>
+                                        </th>
+                                        <th style="width:70px">
+                                            <div class="th-content">Reward</div>
+                                        </th>
+                                        <th style="width:80px">
+                                            <div class="th-content">BPs</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="latestBlocks">
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!--Latest Txns-->
+            <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                <div class="blockTable">
+
+                    <div class="widget-heading" style="margin:15px 15px">
+                        <div class="table-title">
+                            <span class="title-box1">Latest Transactions</span>
+                            <span class="txnsMore" style="font-weight:bold; color:#616568" id="goToTxns">More ></span>      
+                        </div>
+                    </div>
+
+                    <div id="txns-config_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                        <div class="table-responsive">
+                            <table id="txns-main" class="table dt-table-hover dataTable" style="width:100%"
+                                role="grid" aria-describedby="txns-config_info">
+                                <thead>
+                                    <tr>
+                                        <th style="width:92px">
+                                            <div class="th-content">Action</div>
+                                        </th>
+                                        <th class="th-agecontent" style="min-width:105px">
+                                            <span id="ageTimeTrx">Age
+                                            </span>
+                                            <span role="img" aria-label="retweet" class="anticon anticon-retweet"
+                                                style="vertical-align: 0px; margin-left: 10px;">
+                                                <svg viewBox="0 0 1024 1024" focusable="false" data-icon="retweet"
+                                                    width="1em" height="1em" fill="currentColor" aria-hidden="true">
+                                                    <path
+                                                        d="M136 552h63.6c4.4 0 8-3.6 8-8V288.7h528.6v72.6c0 1.9.6 3.7 1.8 5.2a8.3 8.3 0 0011.7 1.4L893 255.4c4.3-5 3.6-10.3 0-13.2L749.7 129.8a8.22 8.22 0 00-5.2-1.8c-4.6 0-8.4 3.8-8.4 8.4V209H199.7c-39.5 0-71.7 32.2-71.7 71.8V544c0 4.4 3.6 8 8 8zm752-80h-63.6c-4.4 0-8 3.6-8 8v255.3H287.8v-72.6c0-1.9-.6-3.7-1.8-5.2a8.3 8.3 0 00-11.7-1.4L131 768.6c-4.3 5-3.6 10.3 0 13.2l143.3 112.4c1.5 1.2 3.3 1.8 5.2 1.8 4.6 0 8.4-3.8 8.4-8.4V815h536.6c39.5 0 71.7-32.2 71.7-71.8V480c-.2-4.4-3.8-8-8.2-8z">
+                                                    </path>
+                                                </svg>
+                                            </span>
+                                        </th>
+                                        <!-- <th style="width:90px">
+                                            <div class="th-content">Block</div>
+                                        </th> -->
+                                        <th style="width:81px">
+                                            <div class="th-content th-heading">From</div>
+                                        </th>
+                                        <th style="width:81px">
+                                            <div class="th-content th-heading">To</div>
+                                        </th>                                       
+                                        <th style="width:132px">
+                                            <div class="th-content">Amount</div>
+                                        </th>
+                                        <!-- <th>
+                                            <div class="th-content">Hash</div>
+                                        </th> -->
+                                        <!-- <th style="width:70px">
+                                            <div class="th-content">BPs</div>
+                                        </th> -->
+                                    </tr>
+                                </thead>
+                                <tbody id="latestTxns">
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>        
+        </div>
+    </div>
+    <!--  END CONTENT PART  -->
+
+    <!-- CONTEXT MENU -->
+    <div id='dochi_context_menu' class="custom-context-menu" style="display: none;">
+        <ul>
+            <li>
+                <a><img alt="logo" style="width:20px;" src="/images/copy.svg"> Copy</a>
+            </li>
+            <!-- <li><a>Open in a new tab</a></li>
+            <li><a>Show QR Code</a></li> -->
+        </ul>
+    </div>
+
+    <!-- SEARCH FILTER MENU-->
+    <div class="filter-dropdown-menu" id="drop-content" style="display: none;">
+        <ul>
+            <li onClick="setFilter('All Filters');"> All Filters</li>
+            <li onClick="setFilter('Token Sym.');"> Token Sym.</li>
+            <li onClick="setFilter('Token Name');"> Token Name</li>
+            <li onClick="setFilter('Account ID');"> Account ID</li>
+            <li onClick="setFilter('Account No.');"> Account No.</li>
+            <li onClick="setFilter('Txn ID');"> Txn ID</li>
+            <li onClick="setFilter('Block No.');"> Block No.</li>
+        </ul>
+    </div>
+
+</div>
+<!-- END MAIN CONTAINER -->
+
+<style>
+    .navbar .navbar-item .nav-item.user-profile-dropdown a.user .media img {
+        width: 30px;
+        height: 30px;
+        box-shadow: 0 0px 0px rgb(0 0 0 / 7%), 0 0px 0px rgb(0 0 0 / 14%);
+    }
+
+    .layout-px-spacing {
+        padding: 0 32px!important;
+        min-height: calc(100vh - 125px)!important;
+    }
+
+    .layout-spacing {
+        padding: 0px 10px 20px;
+    }
+
+    .layout-top-spacing {
+        margin-top: 20px;
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        flex-basis: 1200px;
+        overflow: auto;
+        max-width: 1200px;
+        margin: 0px auto;
+    }
+
+    *, ::after, ::before {
+        box-sizing: border-box;
+    }
+
+    .summary-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: stretch;
+        align-items: stretch;
+        height: auto;
+        background-color: white;
+        background-clip: border-box;
+        margin: 30px 0 0 0;
+        box-sizing: border-box;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+        box-shadow: 0 0 40px 0 rgb(94 92 154 / 6%);
+    }
+
+    .summary-priceGridbox {
+        flex: 1 1 auto;
+        display: grid;
+        grid-template-columns: 50px auto;
+        grid-template-rows: minmax(50px, auto);
+        background-color: #fff;
+        background-clip: border-box;
+        padding: 10px 20px;
+    }
+
+    .summary-bigNoGridbox {
+        flex: 1 1 auto;
+        display: grid;
+        grid-template-columns: 70px auto;
+        grid-template-rows: minmax(50px, auto);
+        background-color: #fff;
+        background-clip: border-box;
+        padding: 10px 20px;
+    }
+
+    .icon-box {
+        grid-row: span 2;
+        justify-self: center;
+        align-self: center;
+    }
+
+    .title-box1 {
+        align-self: center;
+        font-size: 18px;
+        font-weight: 600;
+        color: #6d6d6d;
+    }
+
+    .title-box2 {
+        align-self: center;
+        font-size: 14px;
+        font-weight: 600;
+        color: #6d6d6d;
+    }
+
+    .value-box {
+        align-self: center;
+        font-size: 24px;
+        font-weight: 600;
+        color: #d52e30;
+    }
+
+    .value-box1 {
+        align-self: center;
+        font-size: 24px;
+        font-weight: 400;
+        color: black;
+    }
+
+    .value-box2 {
+        align-self: center;
+        font-size: 18px;
+        font-weight: 300;
+        color: #2d912c;
+    }
+
+    .total-container {
+        display: grid;
+        height: 150px;
+        grid-template-columns: 1.7fr 1fr;
+        grid-template-rows: minmax(20px, auto) minmax(20px, auto) minmax(50px, auto);
+        grid-column: 1 / 1;
+        place-content: stretch stretch;
+        background-color: white;
+        background-clip: border-box;
+        padding: 10px 30px 0px;
+        box-sizing: border-box;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+        box-shadow: 0 0 40px 0 rgb(94 92 154 / 6%);
+    }
+
+    .tot-data-title {
+        grid-column: 1 / span 2;
+        align-self: center;
+        text-align: left;
+    }
+
+    .tot-data-item-left {
+        align-self: left;
+        text-align: left;
+    }
+
+    .tot-data-item-right {
+        align-self: left;
+        text-align: left;
+    }
+
+    .textColor {
+        color: #d52e30;
+    }
+
+    .widget-one_hybrid {
+        overflow: hidden;
+    }
+
+    .widget-one_hybrid .widget-heading {
+        padding: 20px 20px 0;
+    }
+
+    .widget {
+        border: 1px solid rgba(0, 0, 0, .125);
+    }
+
+    .table-title {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between; 
+        height: auto;      
+        margin: 30px 0 0 0;       
+    }
+    
+    .blkMore {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        text-align: right;
+        font-size: 12px;
+    }
+
+    .txnsMore {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        text-align: right;
+        font-size: 12px;
+    }
+
+    .blockTable {
+        flex-basis: 591px;
+        /* max-width: 600px; */
+        padding: 20px 15px 0px;
+        position: relative;
+        box-sizing: border-box;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+        background-color: white;
+        color: black;
+        box-shadow: 0 0 40px 0 rgb(94 92 154 / 6%);
+        overflow: hidden;
+    }
+
+    .table-responsive {     
+        overflow-x: hidden;       
+    }
+
+    .cursorDefault {
+        cursor: default;
+    }
+
+    .cursorPointer {
+        cursor: pointer;
+    }
+
+    .cursorPointer:hover {
+        color: #d52e30;
+    }
+
+    .table>tbody>tr>td {
+        vertical-align: middle;
+        font-size: 12px;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .th-content {
+        text-align: left;
+        font-size: 12px;
+    }
+
+    .th-agecontent {
+        cursor: pointer;
+        text-align: left;
+        font-size: 12px;
+    }
+
+    .hover-content:hover {
+        color: #d52e30;
+    }
+
+    .custom-context-menu {
+        position: absolute;
+        box-sizing: border-box;
+        height: 30px;
+        min-width: 100px;
+        background-color: #f9d781;
+        /* rgba(255, 236, 203, 0.9);           */
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+    }
+
+    .custom-context-menu ul {
+        list-style: none;
+        padding: 0;
+        background-color: transparent;
+    }
+
+    .custom-context-menu li {
+        padding: 3px 5px;
+        cursor: pointer;
+        color: black;
+        font-weight: 400;
+    }
+
+    .custom-context-menu li:hover {
+        background-color: #f0f0f0;
+        border: 1px solid #f0f0f0;
+        border-radius: 0.25rem;
+    }
+
+    .image {
+        width: 20px;
+        height: 30px;
+        content: url("/images/copy.svg");
+    }
+
+    .form-control {
+        height: auto;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0px 0px rgb(194 213 255 / 62%);
+        border: 1px solid #bfc9d4;
+    }
+
+    .input-group>.form-control:not(:first-child),
+    .input-group>.custom-select:not(:first-child) {
+        border-left: 0;
+        border-right: 0;
+    }
+
+    .input-group .input-group-prepend .input-group-text {
+        border: 1px solid #bfc9d4;
+        background-color: #fff;
+    }
+
+    .deleteTextBtnArea {
+        display: flex;
+        background-color: white;
+        padding: 0px 10px;
+        width: auto;
+        height: auto;
+        border: 1px solid #bfc9d4;
+        color: #3b3f5c;
+        border-radius: 0px;
+        border-left: 0;
+        border-right: 0;
+    }
+
+    .deleteTextBtn {
+        justify-content: center;
+        align-self: center;
+        align-items: center;
+        background-color: white;
+        width: 20px;
+        content: url("/images/close-button.svg");
+        cursor: pointer;
+    }
+
+    .searchDivider {
+        border-left: 1px solid #bfc9d4;
+        height: 50px;
+    }
+
+    .searchFilters {
+        display: grid;
+        grid-template-columns: 103px 20px;
+        background-color: white;
+        min-width: 133px;
+        height: auto;
+        border: 1px solid #bfc9d4;
+        color: #3b3f5c;
+        font-size: 15px;
+        letter-spacing: 1px;
+        padding: 12px 0px 12px 20px;
+        margin-left: 0px;
+        margin-right: 0px;
+        border-radius: 0px 6px 6px 0px;
+        border-left: 0;
+        cursor: pointer;
+    }
+
+    .searchFilters:hover {
+        color: #d52e30;
+    }
+
+    .searchFilterTitle {
+        text-align: center;
+    }
+
+    .arrowIcon {
+        align-self: center;
+        width: 15px;
+        height: 15px;
+        content: url("/images/arrow-down.png");
+    }
+
+    .filter-dropdown-menu {
+        position: absolute;
+        box-sizing: border-box;
+        min-width: 133px;
+        background-color: #ffffff;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+    }
+
+    .filter-dropdown-menu ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        background-color: transparent;
+    }
+
+    .filter-dropdown-menu li {
+        padding: 10px 30px;
+        cursor: pointer;
+        color: black;
+    }
+
+    .filter-dropdown-menu li:hover {
+        background-color: #f0f0f0;
+    }
+
+    .topbar-nav.header nav#topbar ul.menu-categories li.menu>a:hover svg:not(.feather-chevron-down) {
+        color: #d52e30;
+        fill: #d52e30;
+    }
+
+    .topbar-nav.header nav#topbar ul.menu-categories li.menu a>div svg:not(.feather-chevron-down) {
+        stroke-width: 1.5px;
+        stroke: black;
+    }
+</style>

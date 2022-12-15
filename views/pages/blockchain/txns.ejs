@@ -1,0 +1,671 @@
+<!-- NAVBAR HOME-->
+<%- include('../../pages/navBar/navBarTxns') %>
+
+<!--  BEGIN MAIN CONTAINER  -->
+<div class="main-container" id="container">
+
+    <!--  BEGIN OVERLAY  -->
+    <div class="overlay"></div>
+    <div class="cs-overlay"></div>
+    <div class="search-overlay"></div>
+    <!-- END OVERLAY -->
+
+    <!--  BEGIN CONTENT PART  -->
+    <div class="layout-px-spacing">
+        <div class="row layout-top-spacing">      
+            <!--  SEARCH BAR  -->      
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">               
+                <%- include('../../pages/navBar/searchBar') %>    
+            </div>    
+            <!-- Title -->
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">            
+                <h3 class="page-title" style="margin:30px 0px 20px 20px">Transactions</h3>
+            </div>    
+            <!-- Total -->
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+
+                <div class="txnsCell-container">
+                    <div class="title-box1">
+                        <span style="margin:0 6px 0 0">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M5 8C6.10457 8 7 7.10457 7 6C7 4.89543 6.10457 4 5 4C3.89543 4 3 4.89543 3 6C3 7.10457 3.89543 8 5 8Z"
+                                    stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="M12 8C13.1046 8 14 7.10457 14 6C14 4.89543 13.1046 4 12 4C10.8954 4 10 4.89543 10 6C10 7.10457 10.8954 8 12 8Z"
+                                    stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="M19 8C20.1046 8 21 7.10457 21 6C21 4.89543 20.1046 4 19 4C17.8954 4 17 4.89543 17 6C17 7.10457 17.8954 8 19 8Z"
+                                    stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="M5 20C6.10457 20 7 19.1046 7 18C7 16.8954 6.10457 16 5 16C3.89543 16 3 16.8954 3 18C3 19.1046 3.89543 20 5 20Z"
+                                    stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="M12 20C13.1046 20 14 19.1046 14 18C14 16.8954 13.1046 16 12 16C10.8954 16 10 16.8954 10 18C10 19.1046 10.8954 20 12 20Z"
+                                    stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M5 8V16" stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <path d="M12 8V16" stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <path
+                                    d="M19 8V10C19 10.5304 18.7893 11.0391 18.4142 11.4142C18.0391 11.7893 17.5304 12 17 12H5"
+                                    stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </span>
+                        <span> Total BPs</span>
+                    </div>
+                    <div class="txnsInfo-box">
+                        <span id="bpCnt"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+
+                <div class="txnsCell-container">
+                    <div class="title-box1">
+                        <span style="margin:0 6px 0 0">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M8 5H6C5.46957 5 4.96086 5.21071 4.58579 5.58579C4.21071 5.96086 4 6.46957 4 7V19C4 19.5304 4.21071 20.0391 4.58579 20.4142C4.96086 20.7893 5.46957 21 6 21H11.697"
+                                    stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M18 14V18H22" stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <path
+                                    d="M18 11V7C18 6.46957 17.7893 5.96086 17.4142 5.58579C17.0391 5.21071 16.5304 5 16 5H14"
+                                    stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="M12 3H10C8.89543 3 8 3.89543 8 5C8 6.10457 8.89543 7 10 7H12C13.1046 7 14 6.10457 14 5C14 3.89543 13.1046 3 12 3Z"
+                                    stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="M18 22C20.2091 22 22 20.2091 22 18C22 15.7909 20.2091 14 18 14C15.7909 14 14 15.7909 14 18C14 20.2091 15.7909 22 18 22Z"
+                                    stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M8 11H12" stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <path d="M8 15H11" stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </span>
+                        <span id="tottxns">Total Txns</span>
+                    </div>
+                    <div class="txnsInfo-box">
+                        <span id="totalTxsCnt"></span>
+                    </div>
+                </div>
+
+            </div>
+   
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+
+                <div class="bpCell-container">
+                    <div class="title-box1">
+                        <span style="margin:0 6px 0 0">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z"
+                                    stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M14.5 9H10.5V12.5M10.5 16V12.5M10.5 12.5H13.0455" stroke="black"
+                                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </span>
+                        <span id="bp1txns"> BP1 Txns</span>
+                    </div>
+                    <div class="txnsInfo-box">
+                        <span id="bp1TxsCnt"></span>
+                    </div>
+                    <div class="title-box2">
+                        24H
+                    </div>
+                    <span class="txnsInfo-box2">
+                        <span>+</span>
+                        <span id="bp1Txs24hCnt"></span>
+                    </span>
+                </div>
+
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+
+                <div class="bpCell-container">
+                    <div class="title-box1">
+                        <span style="margin:0 6px 0 0">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z"
+                                    stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M14.5 9H10.5V12.5M10.5 16V12.5M10.5 12.5H13.0455" stroke="black"
+                                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </span>
+                        <span id="bp2txns"> BP2 Txns</span>
+                    </div>
+                    <div class="txnsInfo-box">
+                        <span id="bp2TxsCnt"></span>
+                    </div>
+                    <div class="title-box2">
+                        24H
+                    </div>
+                    <span class="txnsInfo-box2">
+                        <span>+</span>
+                        <span id="bp2Txs24hCnt"></span>
+                    </span>
+                </div>
+
+            </div>
+            <!-- table -->
+            <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
+                <div class="txnsTable">
+                    <ul class="nav nav-pills mb-3 mt-3" id="pills-tab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="pills-all-tab" data-toggle="pill" href="#pills-all"
+                                role="tab" aria-controls="pills-all" aria-selected="true">All</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" id="pills-bp1-tab" data-toggle="pill" href="#pills-bp1" role="tab"
+                                aria-controls="pills-bp1" aria-selected="true">BP1</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" id="pills-bp2-tab" data-toggle="pill" href="#pills-bp2" role="tab"
+                                aria-controls="pills-bp2" aria-selected="false">BP2</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="pills-tabContent">
+                        <div class="tab-pane fade show active" id="pills-all" role="tabpanel"
+                            aria-labelledby="pills-all-tab">
+                            <div class="table-responsive">
+                                <table id="all-config" class="table dt-table-hover dataTable"
+                                    style="width:100%; margin: 0 auto 8px;" role="grid"
+                                    aria-describedby="all-config_info">
+                                    <thead style="background-color: #f4e6e6;">
+                                        <tr role="row">
+                                            <th class="sorting" tabindex="0"   style="width: 100px;">Block No
+                                            </th>
+                                            <th tabindex="0"   style="width: 170px;">
+                                                <span id="ageTimeAll">Age</span>
+                                                <span role="img" aria-label="retweet" class="anticon anticon-retweet"
+                                                    style="vertical-align: 0px; margin-left: 10px;">
+                                                    <svg viewBox="0 0 1024 1024" focusable="false" data-icon="retweet"
+                                                        width="1em" height="1em" fill="currentColor" aria-hidden="true">
+                                                        <path
+                                                            d="M136 552h63.6c4.4 0 8-3.6 8-8V288.7h528.6v72.6c0 1.9.6 3.7 1.8 5.2a8.3 8.3 0 0011.7 1.4L893 255.4c4.3-5 3.6-10.3 0-13.2L749.7 129.8a8.22 8.22 0 00-5.2-1.8c-4.6 0-8.4 3.8-8.4 8.4V209H199.7c-39.5 0-71.7 32.2-71.7 71.8V544c0 4.4 3.6 8 8 8zm752-80h-63.6c-4.4 0-8 3.6-8 8v255.3H287.8v-72.6c0-1.9-.6-3.7-1.8-5.2a8.3 8.3 0 00-11.7-1.4L131 768.6c-4.3 5-3.6 10.3 0 13.2l143.3 112.4c1.5 1.2 3.3 1.8 5.2 1.8 4.6 0 8.4-3.8 8.4-8.4V815h536.6c39.5 0 71.7-32.2 71.7-71.8V480c-.2-4.4-3.8-8-8.2-8z">
+                                                        </path>
+                                                    </svg>
+                                                </span>
+                                            </th>
+                                            <th class="sorting" tabindex="0" style="width: 150px;">From</th>                                            
+                                            <th class="sorting" tabindex="0" style="width: 150px;">To</th>
+                                            <th class="sorting" tabindex="0" style="width: 100px;">Action</th>
+                                            <th class="sorting" tabindex="0" style="width: 120px;">Amount</th>
+                                            <th class="sorting" tabindex="0" style="width: 200px;">Hash</th>
+                                            <th class="sorting" tabindex="0" style="width: 100px;">BPs</th>
+                                            <th class="sorting" tabindex="0" >From</th>
+                                            <th class="sorting" tabindex="0" >To</th>
+                                            <th class="sorting" tabindex="0" style="width: 150px;">Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="allTx">
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade show" id="pills-bp1" role="tabpanel" aria-labelledby="pills-bp1-tab">
+                            <div class="table-responsive">
+                                <table id="bp1-config" class="table dt-table-hover dataTable"
+                                    style="width:100%; min-width:1100px; margin: 0 auto 8px;" role="grid"
+                                    aria-describedby="bp1-config_info">
+                                    <thead style="background-color: #f4e6e6;">
+                                        <tr role="row">
+                                            <th class="sorting" tabindex="1"  rowspan="1"  colspan="1" style="width: 100px;">Block No
+                                            </th>
+                                            <th tabindex="1"  style="width: 170px;">
+                                                <span id="ageTimeBp1">Age</span>
+                                                <span role="img" aria-label="retweet" class="anticon anticon-retweet"
+                                                    style="vertical-align: 0px; margin-left: 10px;">
+                                                    <svg viewBox="0 0 1024 1024" focusable="false" data-icon="retweet"
+                                                        width="1em" height="1em" fill="currentColor" aria-hidden="true">
+                                                        <path
+                                                            d="M136 552h63.6c4.4 0 8-3.6 8-8V288.7h528.6v72.6c0 1.9.6 3.7 1.8 5.2a8.3 8.3 0 0011.7 1.4L893 255.4c4.3-5 3.6-10.3 0-13.2L749.7 129.8a8.22 8.22 0 00-5.2-1.8c-4.6 0-8.4 3.8-8.4 8.4V209H199.7c-39.5 0-71.7 32.2-71.7 71.8V544c0 4.4 3.6 8 8 8zm752-80h-63.6c-4.4 0-8 3.6-8 8v255.3H287.8v-72.6c0-1.9-.6-3.7-1.8-5.2a8.3 8.3 0 00-11.7-1.4L131 768.6c-4.3 5-3.6 10.3 0 13.2l143.3 112.4c1.5 1.2 3.3 1.8 5.2 1.8 4.6 0 8.4-3.8 8.4-8.4V815h536.6c39.5 0 71.7-32.2 71.7-71.8V480c-.2-4.4-3.8-8-8.2-8z">
+                                                        </path>
+                                                    </svg>
+                                                </span>
+                                            </th>
+                                            <th class="sorting" tabindex="1" style="width: 150px;">From</th>
+                                            <th class="sorting" tabindex="1" style="width: 150px;">To</th>
+                                            <th class="sorting" tabindex="1" style="width: 100px;">Action</th>
+                                            <th class="sorting" tabindex="1" style="width: 120px;">Amount</th>
+                                            <th class="sorting" tabindex="1" style="width: 200px;">Hash</th>
+                                            <th class="sorting" tabindex="1" style="width: 100px;">BPs</th>
+                                            <th class="sorting" tabindex="1" >From</th>
+                                            <th class="sorting" tabindex="1" >To</th>
+                                            <th class="sorting" tabindex="1" style="width: 150px;">Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="bp1Tx">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade show" id="pills-bp2" role="tabpanel" aria-labelledby="pills-bp2-tab">
+                            <div class="table-responsive">
+                                <table id="bp2-config" class="table dt-table-hover dataTable"
+                                    style="width:100%; min-width:1100px; margin: 0 auto 8px;" role="grid"
+                                    aria-describedby="bp2-config_info">
+                                    <thead style="background-color: #f4e6e6;">
+                                        <tr role="row">
+                                            <th class="sorting" tabindex="2"  style="width: 100px;">Block No
+                                            </th>
+                                             <th tabindex="2"  style="width: 170px;">
+                                                <span id="ageTimeBp2">Age</span>
+                                                <span role="img" aria-label="retweet" class="anticon anticon-retweet"
+                                                    style="vertical-align: 0px; margin-left: 10px;">
+                                                    <svg viewBox="0 0 1024 1024" focusable="false" data-icon="retweet"
+                                                        width="1em" height="1em" fill="currentColor" aria-hidden="true">
+                                                        <path
+                                                            d="M136 552h63.6c4.4 0 8-3.6 8-8V288.7h528.6v72.6c0 1.9.6 3.7 1.8 5.2a8.3 8.3 0 0011.7 1.4L893 255.4c4.3-5 3.6-10.3 0-13.2L749.7 129.8a8.22 8.22 0 00-5.2-1.8c-4.6 0-8.4 3.8-8.4 8.4V209H199.7c-39.5 0-71.7 32.2-71.7 71.8V544c0 4.4 3.6 8 8 8zm752-80h-63.6c-4.4 0-8 3.6-8 8v255.3H287.8v-72.6c0-1.9-.6-3.7-1.8-5.2a8.3 8.3 0 00-11.7-1.4L131 768.6c-4.3 5-3.6 10.3 0 13.2l143.3 112.4c1.5 1.2 3.3 1.8 5.2 1.8 4.6 0 8.4-3.8 8.4-8.4V815h536.6c39.5 0 71.7-32.2 71.7-71.8V480c-.2-4.4-3.8-8-8.2-8z">
+                                                        </path>
+                                                    </svg>
+                                                </span>
+                                            </th>
+                                            <th class="sorting" tabindex="2"  style="width: 150px;">From</th>
+                                            <th class="sorting" tabindex="2"  style="width: 150px;">To</th>
+                                            <th class="sorting" tabindex="2"  style="width: 100px;">Action</th>
+                                            <th class="sorting" tabindex="2"  style="width: 120px;">Amount</th>
+                                            <th class="sorting" tabindex="2"  style="width: 200px;">Hash</th>
+                                            <th class="sorting" tabindex="2"  style="width: 100px;">BPs</th>
+                                            <th class="sorting" tabindex="2"  >From </th>
+                                            <th class="sorting" tabindex="2"  >To </th>
+                                            <th class="sorting" tabindex="2"  style="width: 150px;">Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="bp2Tx">
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  END CONTENT PART  -->
+
+    <!-- SEARCH FILTER MENU-->
+    <div class="filter-dropdown-menu" id="drop-content" style="display: none;">
+        <ul>
+            <li onClick="setFilter('All Filters');"> All Filters</li>
+            <li onClick="setFilter('Token Sym.');"> Token Sym.</li>
+            <li onClick="setFilter('Token Name');"> Token Name</li>
+            <li onClick="setFilter('Account ID');"> Account ID</li>
+            <li onClick="setFilter('Account No.');"> Account No.</li>
+            <li onClick="setFilter('Txn ID');"> Txn ID</li>
+            <li onClick="setFilter('Block No.');"> Block No.</li>
+        </ul>
+    </div>
+
+</div>
+
+<style>
+    .navbar .navbar-item .nav-item.user-profile-dropdown a.user .media img {
+        box-shadow: 0 0px 0px rgb(0 0 0 / 7%), 0 0px 0px rgb(0 0 0 / 14%);
+    }
+    .layout-px-spacing {
+        padding: 0 32px!important;
+        min-height: calc(100vh - 125px)!important;
+    }
+
+    .layout-spacing {
+        padding: 0px 10px 20px;
+    }
+
+    .layout-top-spacing {
+        margin-top: 20px;
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        flex-basis: 1200px;
+        overflow: auto;
+        max-width: 1200px;
+        margin: 0px auto;
+    }
+
+    *, ::after, ::before {
+        box-sizing: border-box;
+    }  
+
+    .txnsRow-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: stretch;
+        height: auto;
+        max-width: 1200px;
+    }
+
+    .txnsCell-container {
+        display: flex;
+        height: auto;
+        flex-basis: 590px;
+        flex-grow: 1;
+        place-content: stretch stretch;
+        background-color: #fff;
+        background-clip: border-box;
+        padding: 20px 20px;
+        margin: 0;
+        box-sizing: border-box;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+        box-shadow: 0 0 40px 0 rgb(94 92 154 / 6%);
+        max-width: 590px;
+    }
+
+    .bpRow-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        height: auto;
+        max-width: 1200px;
+    }
+
+    .bpCell-container {
+        display: flex;
+        height: auto;
+        flex-basis: 590px;
+        flex-grow: 1;
+        /* grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: minmax(50px, auto), minmax(50px, auto), minmax(50px, auto); */
+        place-content: stretch stretch;
+        background-color: #fff;
+        background-clip: border-box;
+        padding: 20px 20px;
+        margin: 0;
+        box-sizing: border-box;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+        box-shadow: 0 0 40px 0 rgb(94 92 154 / 6%);
+        max-width: 590px;
+    }
+
+    .title-box1 {
+        padding: 0px 10px;
+        align-self: center;
+        text-align: left;
+        font-size: 18px;
+        font-weight: 600;
+        color: #6d6d6d;
+    }
+
+    .title-box2 {
+        padding: 0px 10px;
+        align-self: center;
+        text-align: left;
+        font-size: 14px;
+        font-weight: 600;
+        color: #6d6d6d;
+    }
+
+    .txnsInfo-box {
+        flex-grow: 1;
+        padding: 0px 10px;
+        align-self: center;
+        text-align: left;
+        font-size: 24px;
+        font-weight: 400;
+        color: black;
+    }
+
+    .txnsInfo-box2 {
+        flex-grow: 1;
+        padding: 0px 10px;
+        align-self: center;
+        text-align: left;
+        font-size: 18px;
+        font-weight: 300;
+        color: #2d912c;
+    }
+
+    /* Hash의 길이가 다른 문제점을 해결하기 위해 문자당 width가 같은 monospace 계열 폰트를 사용
+    : Courier, Courier New, Lucida, Console, Monaco */
+    .monospace {
+        font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .alignLeft {
+        text-align: left;
+    }
+
+    .alignRight {
+        text-align: right;
+    }
+
+    .alignCenter {
+        text-align: center;
+    }
+
+    .textColor {
+        color: #d52e30;
+    }
+
+    .cursorPointer {
+        cursor: pointer;
+    }
+
+    .cursorPointer:hover {
+        color: #d52e30;
+    }
+
+    .dataTables_wrapper {
+        overflow: auto;
+    }
+
+    .container,
+    .container-fluid,
+    .container-sm,
+    .container-md,
+    .container-lg,
+    .container-xl {
+        width: 100%;
+        padding: 0;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .txnsTable {
+        flex-basis: 1200px;
+        max-width: 1200px;
+        min-height: 500px;
+        padding: 15px 30px;
+        position: relative;
+        box-sizing: border-box;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+        background-color: #fff;
+        color: black;
+        box-shadow: 0 0 40px 0 rgb(94 92 154 / 6%);
+    }
+
+    th,
+    td {
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    #all-config thead .sorting,
+    #all-config thead .sorting_asc,
+    #all-config thead .sorting_desc {
+        background: none;
+        cursor: default;
+    }
+
+    #bp1-config thead .sorting,
+    #bp1-config thead .sorting_asc,
+    #bp1-config thead .sorting_desc {
+        background: none;
+        cursor: default;
+    }
+
+    #bp2-config thead .sorting,
+    #bp2-config thead .sorting_asc,
+    #bp2-config thead .sorting_desc {
+        background: none;
+        cursor: default;
+    }
+
+    .custom-context-menu {
+        position: absolute;
+        box-sizing: border-box;
+        height: 30px;
+        min-width: 100px;
+        background-color: #f9d781;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+    }
+
+    .custom-context-menu ul {
+        list-style: none;
+        padding: 0;
+        background-color: transparent;
+    }
+
+    .custom-context-menu li {
+        padding: 3px 5px;
+        cursor: pointer;
+        color: black;
+        font-weight: 400;
+    }
+
+    .custom-context-menu li:hover {
+        background-color: #f0f0f0;
+        border: 1px solid #f0f0f0;
+        border-radius: 0.25rem;
+    }
+
+    .form-control {
+        height: auto;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0px 0px rgb(194 213 255 / 62%);
+        border: 1px solid #bfc9d4;
+    }
+
+    .input-group>.form-control:not(:first-child),
+    .input-group>.custom-select:not(:first-child) {
+        border-left: 0;
+        border-right: 0;
+    }
+
+    .input-group .input-group-prepend .input-group-text {
+        border: 1px solid #bfc9d4;
+        background-color: #fff;
+    }
+
+    .deleteTextBtnArea {
+        display: flex;
+        background-color: white;
+        padding: 0px 10px;
+        width: auto;
+        height: auto;
+        border: 1px solid #bfc9d4;
+        color: #3b3f5c;
+        border-radius: 0px;
+        border-left: 0;
+        border-right: 0;
+    }
+
+    .deleteTextBtn {
+        justify-content: center;
+        align-self: center;
+        background-color: white;
+        width: 20px;
+        content: url("/images/close-button.svg");
+        cursor: pointer;
+    }
+
+    .searchDivider {
+        border-left: 1px solid #bfc9d4;
+        height: 50px;
+    }
+
+    .searchFilters {
+        display: grid;
+        grid-template-columns: 103px 20px;
+        background-color: white;
+        min-width: 133px;
+        height: auto;
+        border: 1px solid #bfc9d4;
+        color: #3b3f5c;
+        font-size: 15px;
+        letter-spacing: 1px;
+        padding: 12px 0px 12px 20px;
+        margin-left: 0px;
+        margin-right: 0px;
+        border-radius: 0px 6px 6px 0px;
+        border-left: 0;
+        cursor: pointer;
+    }
+
+    .searchFilters:hover {
+        color: #d52e30;
+    }
+
+    .searchFilterTitle {
+        text-align: center;
+    }
+
+    .arrowIcon {
+        align-self: center;
+        width: 15px;
+        height: 15px;
+        content: url("/images/arrow-down.png");
+    }
+
+    .filter-dropdown-menu {
+        position: absolute;
+        box-sizing: border-box;
+        min-width: 133px;
+        background-color: #ffffff;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+    }
+
+    .filter-dropdown-menu ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        background-color: transparent;
+    }
+
+    .filter-dropdown-menu li {
+        padding: 10px 30px;
+        cursor: pointer;
+        color: black;
+    }
+
+    .filter-dropdown-menu li:hover {
+        background-color: #f0f0f0;
+    }
+
+    /* 탑메뉴 active 이외 메뉴 호버시 아이콘 문자열 빨간색 처리 */
+    .topbar-nav.header nav#topbar ul.menu-categories li.menu>a:hover svg:not(.feather-chevron-down) {
+        color: #d52e30;
+        fill: #d52e30;
+    }
+
+    .topbar-nav.header nav#topbar ul.menu-categories li.menu a>div svg:not(.feather-chevron-down) {
+        stroke-width: 1.5px;
+        stroke: black;
+    }
+</style>

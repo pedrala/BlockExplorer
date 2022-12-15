@@ -1,0 +1,276 @@
+<!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+<script src="/public/plugins/apex/apexcharts.min.js"></script>
+<!-- END PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+
+<script>
+    $(document).ready(function () {
+        getMain();
+        // chart 그리기
+       // nodesIncrease();
+        nodesAnalysis();
+        revenue();
+        tokenDist();
+
+    });
+
+    function getMain() {
+        $.ajax({
+            type: "get",
+            url: `${URL}${HOME}`,
+            success: function (data) {
+                //console.log("getMain:" + JSON.stringify(data.result) + "\n");
+           
+                // chart 그리기
+                dataChart(data.result.scTxsHistory);
+
+            },
+            error: function (request, status, error) {
+                console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            },
+        });
+    };
+
+    function dataChart(obj) {
+        let dateObj = []
+        let xArray = []
+        let yArray = []
+
+        //히스토리 오브젝트를 2개의 배열(X축, Y축)에 저장
+        for (let i = 0; i < obj.length; i++) {
+
+            obj[i].date = obj[i].date.split(' ');
+
+            //  console.log(" Date:"+ obj[i].date[0].substr(0,3));
+            obj[i].date[0] = obj[i].date[0].substr(0, 3)
+
+            xArray[i] = obj[i].date[0] + ' ' + obj[i].date[1]
+            yArray[i] = obj[i].ctsCnt
+        }
+
+       // console.log("xArray:" + JSON.stringify(xArray));
+       // console.log("yArray:" + JSON.stringify(yArray));
+
+      
+       let options = {
+            series: [{
+                name: "Nodes",
+                data: yArray
+            }],
+            chart: {
+                height: 300,
+                type: 'line',
+                zoom: {
+                    enabled: false
+                },
+                toolbar: {
+                    show: false,
+                }
+            },          
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth'
+            },          
+            title: {
+                text: '',
+                align: 'left'
+            },
+            grid: {
+                row: {
+                    colors: ['#f1f2f3', 'transparent'], // takes an array which will be repeated on columns
+                    opacity: 0.5
+                },
+            },
+            markers: {
+                size: 1
+            },
+            xaxis: {
+                categories: xArray,
+            }          
+        
+        }
+
+        let chart = new ApexCharts(document.querySelector("#nodesIncrease"), options);
+        chart.render();     
+
+
+    };
+
+
+
+    function nodesIncrease() {
+        let options = {
+            series: [{
+                name: "Desktops",
+                data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
+            }],
+            chart: {
+                height: 350,
+                type: 'line',
+                zoom: {
+                    enabled: false
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth'
+            },
+            title: {
+                text: 'Nodes',
+                align: 'left'
+            },
+            grid: {
+                row: {
+                    colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                    opacity: 0.5
+                },
+            },
+            xaxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+            }
+        };
+
+        let chart = new ApexCharts(document.querySelector("#nodesIncrease"), options);
+        chart.render();
+    }
+
+
+    function nodesAnalysis() {
+        let options = {
+            series: [44, 55, 41, 17, 15],
+            chart: {
+                width: 500,
+                type: 'donut',
+                dropShadow: {
+                    enabled: true,
+                    color: '#111',
+                    top: -1,
+                    left: 3,
+                    blur: 3,
+                    opacity: 0.2
+                }
+            },
+            stroke: {
+                width: 0,
+            },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        labels: {
+                            show: true,
+                            total: {
+                                showAlways: true,
+                                show: true
+                            }
+                        }
+                    }
+                }
+            },
+            labels: ["Comedy", "Action", "SciFi", "Drama", "Horror"],
+            dataLabels: {
+                dropShadow: {
+                    blur: 3,
+                    opacity: 0.8
+                }
+            },
+            fill: {
+                type: 'pattern',
+                opacity: 1,
+                pattern: {
+                    enabled: true,
+                    style: ['verticalLines', 'squares', 'horizontalLines', 'circles', 'slantedLines'],
+                },
+            },
+            states: {
+                hover: {
+                    filter: 'none'
+                }
+            },
+            theme: {
+                palette: 'palette2'
+            },
+            title: {
+                text: "Nodes Type"
+            },
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        width: 320
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }]
+        };
+
+        let chart = new ApexCharts(document.querySelector("#nodesAnalysis"), options);
+        chart.render();
+
+    }
+
+    function revenue() {
+
+        let options = {
+            series: [{
+                name: 'series1',
+                data: [31, 40, 28, 51, 42, 109, 100]
+            }, {
+                name: 'series2',
+                data: [11, 32, 45, 32, 34, 52, 41]
+            }],
+            chart: {
+                height: 350,
+                type: 'area'
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth'
+            },
+            xaxis: {
+                type: 'datetime',
+                categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
+            },
+            tooltip: {
+                x: {
+                    format: 'dd/MM/yy HH:mm'
+                },
+            },
+        };
+
+        let chart = new ApexCharts(document.querySelector("#revenue"), options);
+        chart.render();
+    }
+
+
+    function tokenDist() {
+
+        let options = {
+            series: [44, 55, 41, 17, 15],
+            chart: {
+                type: 'donut',
+            },
+
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        width: 320                    
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }]
+        };
+
+        let chart = new ApexCharts(document.querySelector("#tokenDist"), options);
+        chart.render();
+    }
+</script>

@@ -1,0 +1,260 @@
+<!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+<!-- <link rel="stylesheet" type="text/css" href="../public/plugins/table/datatable/datatables.css">
+<link rel="stylesheet" type="text/css" href="../public/plugins/table/datatable/dt-global_style.css"> -->
+<!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+
+<script>
+	$(document).ready(function () {
+	
+		getBlkTotal();
+
+		setInterval(() => {
+			getBlkTotal();
+		}, 1000 * 4);
+
+		//LatestBlocks
+		getLatestBlocks();
+
+	});
+
+	/**
+	 * rendering datatable for block data
+	 * @event getLatestBlocks
+	 * @param
+	 */
+	function getLatestBlocks() {
+
+		const table = $('#block-config').DataTable({
+			
+			ajax: {
+				url: `${URL}${LATEST_BLOCK}`,
+				dataSrc: 'result',
+				// success: function (data) {
+				// 		console.log("getLatestBlocks:" + JSON.stringify(data.result) + "\n");
+				// },
+				error: function (request, status, error) {
+					console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				},
+			},
+			//id setting for td cell
+			"createdRow": function (row, data, index) {    //index = row								
+				$('td', row).eq(0).attr('id', 'blk-' + index + '-blkNo');
+				$('td', row).eq(0).attr('val', data.blk);
+				$('td', row).eq(7).attr('title', data.bpNo);
+			},
+			//"data": data.result,
+
+			"columnDefs": [
+				{ targets: [0], className: 'dt-left cursorPointer' },
+				{ targets: [3], className: 'dt-left cursorPointer' },
+				{ targets: [2, 5, 6], className: 'dt-left' },
+				{ targets: [1, 4, 7], className: 'dt-left' },
+				{ targets: [8], visible: false },
+				{
+					'bSortable': false,
+					'aTargets': [1]
+				},
+				{
+					"render": function (data, type, row) {
+						return "#" + data
+					},
+					"targets": 0
+				}			
+			],
+			"columns": [
+				{ "data": "blk" },
+				{ "data": "age" },
+				{ "data": "txCnt" },
+				{ "data": "blkHash" },
+				{ "data": "status" },
+				{ "data": "reward" },
+				{ "data": "burnedFin" },
+				{ "data": "bp" },
+				{ "data": "time" }
+			],
+			"processing": false,
+			"serverSide": false,
+			"searching": false,
+			"ordering": false,
+			"retrieve": false,
+			"paging": true,
+			"info": true,
+			"stripeClasses": [],
+			"lengthChange": false,
+			//	"lengthMenu": [10, 20, 30, 40, 50],
+			//	"displayLength": 20,
+			"pageLength": 20,
+			"order": [[0, 'desc']]
+		});
+
+		setInterval(function () {
+			// table.fnClearTable();
+			// table.fnAddData();		
+			// table.fnDraw();		
+			//console.log("===============latestblock=reload===============")
+			table.ajax.reload();
+			$('#ageTime').html('Age');
+		}, 4000);
+
+		//add cursorPointer on table header
+		table.tables().header().to$(1).addClass('cursorPointer');
+		
+		//when Age header clicked, change it to opposit side  (Age <-> Time)
+		const selectedElements = $("#block-config tr").find("th:eq(1)");
+		$(selectedElements).on('click', function () {
+			// const headers = table.columns().header().toArray();
+			// $(headers).on('click', function () {
+			//	if (headers[1].innerText == 'Age') {						
+			let strAge = document.querySelector("#block > tr:nth-child(1) > td:nth-child(2)")
+			if (strAge.innerHTML.includes('ago')) {
+				$('#ageTime').html('Time');
+				$('#block-config tr').each(function (i) {					
+					if (i > 0)//i=0 -> table header, i=1 => first line of table body
+					{
+						let time = table.rows({ page: 'current' }).data()[i - 1].time;
+						let bgt = getPullTime(Number(time)) || '';
+						//	console.log("bgt:" + bgt + "\n");						
+						$("td:eq(1)", this).text(bgt);
+					}
+				});
+			} else {
+				$('#ageTime').html('Age');
+				$('#block-config tr').each(function (i) {				
+					if (i > 0)
+					{
+						let age = table.rows({ page: 'current' }).data()[i - 1].age;
+						let bgt = age.replace(/&nbsp;/g, '');
+						//	console.log("bgt:" + bgt + "\n");							
+						$("td:eq(1)", this).html(bgt);
+					}
+				});
+			}
+			//		}
+		});
+
+		//move to Block Detail page
+		$('#block-config tbody').on('click', 'tr', function () {
+			const data = table.row(this).data();
+
+			window.location.href = URL + "/block-details/" + data.blk;
+
+		});
+
+		//after rendering datatable, bind unique id on each row
+		$('#block-config').on('draw.dt', function () {
+			let info = table.page.info();
+			let rows = table.rows({ page: 'current' }).data();
+			blkIdBinding(table.page.info().page, rows);
+		});
+		
+		//after clicking pagination, bind unique id on each row
+		$('#block-config').on('page.dt', function () {
+			let info = table.page.info();
+			//console.log('Showing page: ' + info.page + ' of ' + info.pages);
+
+			$('#block-config').on('draw.dt', function () {				
+				let info = table.page.info();
+				let rowNo = []
+				let rowStartNo = info.page * 20;
+				let rowEndNo = info.page * 20 + 20;
+				for (let i = rowStartNo; i < rowEndNo; i++) {
+					rowNo.push(i);
+				}
+				//console.log("rowNoArr:" + JSON.stringify(rowNo))
+				let rows = table.rows(rowNo).data();			
+			
+				blkIdBinding( table.page.info().page, rows);			
+			});
+		});
+	};
+
+	 /**
+     * creating context menu(mouse right click) on each page of blocks datatable
+     * @event blkIdBinding
+     * @param {String} msg A description of...
+     */   
+	function blkIdBinding(pageNo, rows) {
+		
+		for (let i = 0; i < rows.count(); i++) {
+			//console.log('id: ' + (i + parseInt(pageNo * 20)));
+			let id = i + parseInt(pageNo * 20);
+			document.getElementById("blk-" + id + "-blkNo").addEventListener("contextmenu", function (e) { e.preventDefault(); });
+			
+			//display custom context menu
+			$("#blk-" + id + "-blkNo").mousedown(function (ev) {
+				//1. mouse left click 
+				//2. mouse middle click  
+				//3. mouse right click 
+				if (ev.which == 3) {
+					createContextMenu("#blk-" + id + "-blkNo");
+				}
+			});
+		}
+	}
+
+	 /**
+	 * fetching brief data for blocks 
+	 * @event getBlkTotal
+	 * @param 
+	 */
+	function getBlkTotal() {
+		$.ajax({
+			type: "get",
+			url: `${URL}${BLK_TOTAL}`,
+			success: function (data) {
+				//	console.log("getBlkTotal:" + JSON.stringify(data.data) + "\n");
+
+				// display response data from API
+				dataTextView(data.data);
+
+			},
+			error: function (request, status, error) {
+				//console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+			},
+		});
+	};
+
+	/**
+	 * loading upper page data
+	 * @event dataTextView
+	 * @param 
+	 */
+	function dataTextView(data) {
+
+		const totalBlkCnt = new Intl.NumberFormat().format(data.totalBlkCnt)
+		const totalBlk24hCnt = new Intl.NumberFormat().format(data.totalBlk24hCnt)
+		const lastBN = new Intl.NumberFormat().format(data.lastBN)
+
+		//Total BLK
+		$('#totalBlkCnt').text(totalBlkCnt);
+		$('#totalBlk24hCnt').text(totalBlk24hCnt);
+		$('#lastBN').text(lastBN);
+
+		//Rewards
+		$('#totalRewardsCnt').text('0');
+		$('#totalRewards24hCnt').text('0');
+
+		//Burned FIN
+		$('#totalBurnedFINCnt').text('0');
+		$('#totalBurnedFIN24hCnt').text('0');
+
+		executeAni(data);
+	};
+	
+	/**
+	 * executing Animation
+	 * @event executeAni
+	 * @param 
+	 */
+	function executeAni(data) {
+
+		const obj1 = document.getElementById("totalBlkCnt");
+		const obj2 = document.getElementById("totalBlk24hCnt");
+
+		//console.log("totalBlk:" + JSON.stringify(obj1) + "\n");
+
+		animateValue(obj1, data.totalBlkCnt * 0.98, data.totalBlkCnt, 2000);
+		animateValue(obj2, data.totalBlk24hCnt * 0.98, data.totalBlk24hCnt, 2000);
+	}
+
+</script>

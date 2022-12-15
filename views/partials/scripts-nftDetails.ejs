@@ -1,0 +1,557 @@
+<script>
+	let scAction = '';
+	$(document).ready(function () {
+
+		scAction = '<%=scAction%>';
+
+		//if obj is empty or undefined
+		if (scAction == undefined || scAction == '' || scAction == 'null') {
+			window.location.href = URL + '/error-page/' + 'default';
+		} else {
+
+			getNftDetailData();
+		}
+	});
+
+	/**
+	 * fetching detail data for token detail  
+	 * @event tableStart
+	 * @param 
+	 */
+	function getNftDetailData() {
+
+		$.ajax({
+			type: "get",
+			url: `${URL}${NFT_DETAIL_INFO}`,
+			data: { 'scDetail': scAction },
+			success: function (d) {
+
+				tableStart(d.data);
+
+			},
+			error: function (request, status, error) {
+				window.location.href = URL + '/error-page/' + 'default';
+				//console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+			},
+		});
+	};
+
+	/**
+	* displaying detail data on page  
+	* @event tableStart
+	* @param 
+	*/
+	function tableStart(d) {
+
+		const nftData = d[0];
+		//console.log("nftData:" + JSON.stringify(nftData))
+
+		const nftName = nftData.nftName;
+		const tokenName = nftData.name;
+		const symbol = nftData.symbol;
+		const scHash = nftData.scHash;
+		const holders = nftData.holders;
+		const totalCnt = nftData.totalCnt;
+		const totalRatio = nftData.totalRatio;
+		const officialWeb = nftData.officialWeb;
+		const description = nftData.description;
+
+		$('#nftName').html(nftName);
+		$('#tokenSymbol1').html(symbol);
+		$('#tokenSymbol2').html(symbol);
+		$('#tokenName').html(tokenName);
+		$('#holders').html(holders);
+		$('#totalCnt').html(totalCnt);
+		$('#totalRatio').html(totalRatio);
+		$('#officialWeb').html(officialWeb);
+		$('#description').html(description);
+
+		//로고이미지 노출
+		// $('#tokenLogo').html(
+		// 	`<img style="width:60px; height:60px" src='${imgURL}:80/mainnetAction/${scAction}.svg' ></img>`
+		// );
+
+		if (detectMob()) {
+
+			$('#scHash').html(
+				`<div>			
+					<span value="${scHash}"  data-title="${scHash}">${CheckMaxString(scHash, 20)}
+					</span>
+				</div>`
+			);
+			$('#scHashCopy').html(
+				`<span value="${scHash}"  class="image" alt="logo" OnClick="javascript:copy_to_clipboard('${scHash}')" ></span>`
+			);
+		} else {
+
+			$('#scHash').html(
+				`<div>			
+					<span value="${scHash}"  data-title="${scHash}">${scHash}
+					</span>
+				</div>`
+			);
+			$('#scHashCopy').html(
+				`<span value="${scHash}"  class="image" alt="logo" OnClick="javascript:copy_to_clipboard('${scHash}')" ></span>`
+			);
+		}
+
+		getNftTransfer(scAction);
+		getHoldersData();
+		getInventoryData(scAction);
+	};
+
+	function getNftTransfer(action) {
+
+		const table = $('#transfers-config').DataTable({
+
+			ajax: {
+				url: `${URL}${NFTTRANSFER}`,
+				dataSrc: 'result',
+				data: { 'scAction': action },
+				// success: function (data) {
+				// 		console.log("getNftTransfer:" + JSON.stringify(data.result) + "\n");
+				// },
+				complete: function(data){
+				//	console.log("getNftTransfer:" + JSON.stringify(data.responseJSON.result) + "\n");
+				},
+				error: function (request, status, error) {
+					console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				},
+			},
+
+			"columnDefs": [
+				{ targets: [0, 2, 3, 4], className: 'dt-left cursorPointer' },
+				{ targets: [1], className: 'dt-left' },
+				{ targets: [6], className: 'dt-right cursorPointer' },
+				{ targets: [7, 8, 9, 10, 11], visible: false },
+				{ targets: [5], className: 'dt-right' },	
+				//{ targets: [5], className: 'alignProgressTd' },	
+				{
+					"render": function (data, type, row) {
+						return "#" + data
+					},
+					"targets": 0
+				},				
+				{
+					"render": function (data, type, row, meta) {
+						if(!isNaN(data))
+						{						
+						 	if(data == null)
+							return '<span style="margin-left:5px"></span>';
+							else
+							return '<span style="margin-left:5px">' + data + '%</span>';
+						}else
+						{
+							return '<span style="margin-left:5px">' + 0 + '%</span>';
+						}
+					},
+					"targets": 5
+				},
+			],
+
+			"columns": [
+				{ "data": "blk" },
+				{ "data": "age" },
+				{ "data": "fromAccHexa" },
+				{ "data": "toAccHexa" },
+				{ "data": "shortenHash" },
+				{ "data": "pRatio" },
+				{ "data": "tokenIdHexa" },
+				{ "data": "fromAccDecimal" },
+				{ "data": "toAccDecimal" },
+				{ "data": "hash" },				
+				{ "data": "tokenIdDecimal" },
+				{ "data": "time" },
+			],
+
+			"processing": false,
+			"serverSide": false,
+			"searching": false,
+			"ordering": false,
+			"retrieve": false,
+			"paging": true,
+			"info": true,
+			"stripeClasses": [],
+			"lengthChange": false,
+			"lengthMenu": [10, 20, 30, 40, 50],
+			"displayLength": 20,
+			"pageLength": 20,
+			"order": [[0, 'desc']]
+		});
+
+		//when Age header clicked, change it to opposit side  (Age <-> Time)
+		const selectedElementsTrf = $("#transfers-config tr").find("th:eq(1)");
+		$(selectedElementsTrf).on('click', function () {									
+			let strAge = document.querySelector("#nftTrfs > tr:nth-child(1) > td:nth-child(2)")
+			if (strAge.innerHTML.includes('ago')) {
+				$('#transfers-config tr').each(function (i) {
+					$('#ageTimeTrfs').html('Time');
+					if (i > 0)//i=0 -> table header, i=1 => first line of table body
+					{
+						let time = table.rows({ page: 'current' }).data()[i - 1].time;
+						let bgt = getPullTime(Number(time)) || '';
+						//	console.log("bgt:" + bgt + "\n");						
+						$("td:eq(1)", this).text(bgt);
+					}
+				});
+			} else {
+				$('#transfers-config tr').each(function (i) {
+					$('#ageTimeTrfs').html('Age');
+					if (i > 0)
+					{
+						let age = table.rows({ page: 'current' }).data()[i - 1].age;
+						let bgt = age.replace(/&nbsp;/g, '');
+						//	console.log("bgt:" + bgt + "\n");							
+						$("td:eq(1)", this).html(bgt);
+					}
+				});
+			}		
+		});
+
+		// 	move to NFT Detail page
+		$('#transfers-config tbody').on('click', 'tr', function () {
+
+			const target = $(event.target);
+			$td = target.closest('td');
+			const headerName = $td.closest('table').find('th').eq($td.index())[0].innerText
+
+			const data = table.row(this).data();
+
+			if (headerName == 'Block No') {
+				window.location.href = URL + "/block-details/" + data.blk;
+			}
+			else if (headerName == 'From') {
+				if(data.fromAccDecimal != 0000000000000000)
+				window.location.href = URL + "/account-details/" + data.fromAccDecimal;
+			}
+			else if (headerName == 'To') {
+				if(data.toAccDecimal != 0000000000000000)
+				window.location.href = URL + "/account-details/" + data.toAccDecimal;
+			}
+			else if (headerName == 'Hash') {
+				window.location.href = URL + "/trans-hash-details/" + data.hash;
+			}
+			else if (headerName == 'Token ID') { //send Account No. as a '0' from NFT detail
+				window.location.href = URL + "/nft-sub-details/" + "0" + "/" +scAction + "/" + data.tokenIdDecimal;
+			}
+		});
+	};
+
+	function getHoldersData() {
+
+		const table = $('#holders-config').DataTable({
+
+			ajax: {
+				url: `${URL}${NFTHOLDERS}`,
+				dataSrc: 'result',
+				data: { 'scAction': scAction },
+				// success: function (data) {
+				// 		console.log("getNftList:" + JSON.stringify(data.result) + "\n");
+				// },
+				complete: function(data){
+					//console.log("getNftTransfer:" + JSON.stringify(data.responseJSON.result) + "\n");
+				},
+				error: function (request, status, error) {
+					console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				},
+			},
+
+			"columnDefs": [
+				{ targets: [0, 2], className: 'dt-left cursorPointer' },
+				{ targets: [1, 3], className: 'dt-left' },
+				{ targets: [5], className: 'dt-right cursorPointer' },
+				{ targets: [6, 7, 8], visible: false },		
+				{
+					"render": function (data, type, row) {
+						return "#" + data
+					},
+					"targets": 0
+				},			
+				{ targets: [4], className: 'dt-right' },
+				//{ targets: [4], className: 'alignProgressTd' },
+				{
+					"render": function (data, type, row, meta) {
+						if(!isNaN(data))
+						{						
+						 	if(data == null)
+							return '<span style="margin-left:5px"></span>';
+							else
+							return '<span style="margin-left:5px">' + data + '%</span>';
+						}else
+						{
+							return '<span style="margin-left:5px">' + 0 + '%</span>';
+						}			
+					},
+					"targets": 4
+				}
+			],
+			"columns": [
+				{ "data": "blk" },
+				{ "data": "age" },
+				{ "data": "shortenHash" },
+				{ "data": "accountId" },
+				{ "data": "pRatio" },
+				{ "data": "tokenIdHexa" },
+				{ "data": "hash" },
+				{ "data": "tokenIdDecimal" },
+				{ "data": "time" },
+			],
+			"processing": false,
+			"serverSide": false,
+			"searching": false,
+			"ordering": false,
+			"retrieve": false,
+			"paging": true,
+			"info": true,
+			"stripeClasses": [],
+			"lengthChange": false,
+			"lengthMenu": [10, 20, 30, 40, 50],
+			"displayLength": 20,
+			"pageLength": 20,
+			"order": [[0, 'desc']]
+		});
+
+		//when Age header clicked, change it to opposit side  (Age <-> Time)
+		const selectedElementsHolders = $("#holders-config tr").find("th:eq(1)");
+		$(selectedElementsHolders).on('click', function () {									
+			let strAge = document.querySelector("#nftHlds > tr:nth-child(1) > td:nth-child(2)")
+			if (strAge.innerHTML.includes('ago')) {
+				$('#holders-config tr').each(function (i) {
+					$('#ageTimeHlds').html('Time');
+					if (i > 0)//i=0 -> table header, i=1 => first line of table body
+					{
+						let time = table.rows({ page: 'current' }).data()[i - 1].time;
+						let bgt = getPullTime(Number(time)) || '';
+						//	console.log("bgt:" + bgt + "\n");						
+						$("td:eq(1)", this).text(bgt);
+					}
+				});
+			} else {
+				$('#holders-config tr').each(function (i) {
+					$('#ageTimeHlds').html('Age');
+					if (i > 0)
+					{
+						let age = table.rows({ page: 'current' }).data()[i - 1].age;
+						let bgt = age.replace(/&nbsp;/g, '');
+						//	console.log("bgt:" + bgt + "\n");							
+						$("td:eq(1)", this).html(bgt);
+					}
+				});
+			}		
+		});
+
+		// 	move to NFT Detail page
+		$('#holders-config tbody').on('click', 'tr', function () {
+
+			const target = $(event.target);
+			$td = target.closest('td');
+			const headerName = $td.closest('table').find('th').eq($td.index())[0].innerText
+
+			const data = table.row(this).data();
+
+			if (headerName == 'Block No') {
+				window.location.href = URL + "/block-details/" + data.blk;
+			}		
+			else if (headerName == 'Hash') {
+				window.location.href = URL + "/trans-hash-details/" + data.hash;
+			}
+			else if (headerName == 'Token ID') { 			
+				window.location.href = URL + "/nft-sub-details/" + "0" + "/" +scAction + "/" + data.tokenIdDecimal;
+			}
+
+		});
+	};
+
+	function getInventoryData() {
+
+		const table = $('#inventory-config').DataTable({
+
+			"columnDefs": [
+				{ targets: [0, 1], className: 'alignLeft cursorPointer' },
+				{ targets: [2], className: 'alignRight' },
+				{ targets: [3], visible: false },	
+			],
+			"columns": [
+				{ "data": "tokenIdHexa" },
+				{ "data": "holders" },
+				{ "data": "tokenUri" },
+				{ "data": "tokenIdDecimal" },
+			],
+			"processing": false,
+			"serverSide": false,
+			"searching": false,
+			"ordering": false,
+			"retrieve": false,
+			"paging": true,
+			"info": true,
+			"stripeClasses": [],
+			"lengthChange": false,
+			"lengthMenu": [10, 20, 30, 40, 50],
+			"displayLength": 20,
+			"pageLength": 20,
+			"order": [[0, 'desc']]
+		});
+
+		// 	move to NFT Detail page
+		$('#inventory-config tbody').on('click', 'tr', function () {
+
+
+			const data = table.row(this).data();
+
+			window.location.href = URL + "/nft-details/" + data.symbol;
+
+		});
+	};
+
+
+
+	/**
+	 * rendering datatable for nft data
+	 * @event getLatestNft
+	 * @param
+	 */
+	// function getLatestNft() {
+
+	// 	const table = $('#nft-config').DataTable({
+
+	// 		ajax: {
+	// 			url: `${URL}${LATEST_BLOCK}`,
+	// 			dataSrc: 'result',
+	// 			// success: function (data) {
+	// 			// 		console.log("getLatestBlocks:" + JSON.stringify(data.result) + "\n");
+	// 			// },
+	// 			error: function (request, status, error) {
+	// 				console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+	// 			},
+	// 		},
+	// 		//id setting for td cell
+	// 		"createdRow": function (row, data, index) {    //index = row								
+	// 			$('td', row).eq(0).attr('id', 'blk-' + index + '-blkNo');
+	// 			$('td', row).eq(0).attr('val', data.blk);
+	// 			$('td', row).eq(7).attr('title', data.bpNo);
+	// 		},
+	// 		//"data": data.result,
+
+	// 		"columnDefs": [
+	// 			{ targets: [0], className: 'dt-left cursorPointer' },
+	// 			{ targets: [3], className: 'dt-left cursorPointer' },
+	// 			{ targets: [2, 5, 6], className: 'dt-left' },
+	// 			{ targets: [1, 4, 7], className: 'dt-left' },
+	// 			{ targets: [8], visible: false },
+	// 			{
+	// 				'bSortable': false,
+	// 				'aTargets': [1]
+	// 			},
+	// 			{
+	// 				"render": function (data, type, row) {
+	// 					return "#" + data
+	// 				},
+	// 				"targets": 0
+	// 			}
+	// 		],
+	// 		"columns": [
+	// 			{ "data": "name" },
+	// 			{ "data": "symbol" },
+	// 			{ "data": "contractAddress" },
+	// 			{ "data": "totalSupply" },
+	// 			{ "data": "totalTransfers" }
+	// 		],
+	// 		"processing": false,
+	// 		"serverSide": false,
+	// 		"searching": false,
+	// 		"ordering": false,
+	// 		"retrieve": false,
+	// 		"paging": true,
+	// 		"info": true,
+	// 		"stripeClasses": [],
+	// 		"lengthChange": false,
+	// 		//	"lengthMenu": [10, 20, 30, 40, 50],
+	// 		//	"displayLength": 20,
+	// 		"pageLength": 20,
+	// 		"order": [[0, 'desc']]
+	// 	});
+
+	// 	setInterval(function () {
+	// 		// table.fnClearTable();
+	// 		// table.fnAddData();		
+	// 		// table.fnDraw();
+
+	// 		console.log("===============latestNft=reload===============")
+	// 		table.ajax.reload();
+	// 	}, 4000);
+
+	// 	//add cursorPointer on table header
+	// 	table.tables().header().to$(1).addClass('cursorPointer');
+
+	// 	//when Age header clicked, change it to opposit side  (Age <-> Time)
+	// 	const selectedElements = $("#nft-config tr").find("th:eq(1)");
+	// 	$(selectedElements).on('click', function () {
+	// 		// const headers = table.columns().header().toArray();
+	// 		// $(headers).on('click', function () {
+	// 		//	if (headers[1].innerText == 'Age') {						
+	// 		let strAge = document.querySelector("#block > tr:nth-child(1) > td:nth-child(2)")
+
+	// 	});
+
+	// 	//move to Block Detail page
+	// 	$('#nft-config tbody').on('click', 'tr', function () {
+	// 		const data = table.row(this).data();
+
+	// 		window.location.href = URL + "/block-details/" + data.blk;
+
+	// 	});
+
+	// 	//after rendering datatable, bind unique id on each row
+	// 	$('#nft-config').on('draw.dt', function () {
+	// 		let info = table.page.info();
+	// 		let rows = table.rows({ page: 'current' }).data();
+	// 		blkIdBinding(table.page.info().page, rows);
+	// 	});
+
+	// 	//after clicking pagination, bind unique id on each row
+	// 	$('#nft-config').on('page.dt', function () {
+	// 		let info = table.page.info();
+	// 		console.log('Showing page: ' + info.page + ' of ' + info.pages);
+
+	// 		$('#nft-config').on('draw.dt', function () {
+	// 			let info = table.page.info();
+	// 			let rowNo = []
+	// 			let rowStartNo = info.page * 20;
+	// 			let rowEndNo = info.page * 20 + 20;
+	// 			for (let i = rowStartNo; i < rowEndNo; i++) {
+	// 				rowNo.push(i);
+	// 			}
+	// 			//console.log("rowNoArr:" + JSON.stringify(rowNo))
+	// 			let rows = table.rows(rowNo).data();
+
+	// 			blkIdBinding(table.page.info().page, rows);
+	// 		});
+	// 	});
+	// };
+
+	/**
+	* creating context menu(mouse right click) on each page of blocks datatable
+	* @event blkIdBinding
+	* @param {String} msg A description of...
+	*/
+	function blkIdBinding(pageNo, rows) {
+
+		for (let i = 0; i < rows.count(); i++) {
+			//console.log('id: ' + (i + parseInt(pageNo * 20)));
+			let id = i + parseInt(pageNo * 20);
+			document.getElementById("blk-" + id + "-blkNo").addEventListener("contextmenu", function (e) { e.preventDefault(); });
+
+			//display custom context menu
+			$("#blk-" + id + "-blkNo").mousedown(function (ev) {
+				//1. mouse left click 
+				//2. mouse middle click  
+				//3. mouse right click 
+				if (ev.which == 3) {
+					createContextMenu("#blk-" + id + "-blkNo");
+				}
+			});
+		}
+	}
+
+
+</script>

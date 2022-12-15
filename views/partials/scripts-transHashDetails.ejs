@@ -1,0 +1,227 @@
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=desert"></script>
+<link rel=stylesheet href=https://cdn.jsdelivr.net/npm/pretty-print-json@1.2/dist/pretty-print-json.css>
+<script src=https://cdn.jsdelivr.net/npm/pretty-print-json@1.2/dist/pretty-print-json.min.js></script>
+
+<script>
+	const dataObj = {};
+	$(document).ready(function () {
+
+		const hash = '<%=hash%>';
+
+		dataObj.hash = hash && hash;
+
+		//if obj is empty or undefined
+		if ((dataObj && Object.keys(dataObj).length === 0 && dataObj.constructor === Object)
+			|| (dataObj && dataObj.hash == 'undefined' && dataObj.constructor === Object)) {
+			window.location.href = URL + '/error-page/' + 'default';
+
+		} else {
+			selectAjax(dataObj);
+		}
+	});
+
+	/**
+	 * fetching detail data for trans hash  
+	 * @event tableStart
+	 * @param 
+	 */
+	function selectAjax(dataObj) {
+
+		$.ajax({
+			type: "get",
+			url: `${URL}${TRANS_HASH}`,
+			data: dataObj,
+			success: function (d) {
+				if(d.data == 'error')
+				{
+					window.location.href = URL + '/error-page/' + 'default';	
+				}else
+				{
+					tableStart(d);
+				}
+			},
+			error: function (request, status, error) {
+				window.location.href = URL + '/error-page/' + 'default';
+				//console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+			},
+		});
+	};
+
+	/**
+	 * displaying detail data on page  
+	 * @event tableStart
+	 * @param 
+	 */
+	function tableStart(d) {
+		if (d.data.errorCode == 3000) {
+			window.location.href = URL + '/error-page/' + d.data.contents.msg;
+		}
+
+		const txsData = d.data.contents.scTxsInfo;
+		const contractRawData = d.data.contents.scTxsInfo.contract;
+
+		//time calc for transaction table
+		let time = txsData.create_tm;
+		time = time * 1;
+		const tt = moment(time).fromNow();
+		//age
+		const age = `${tt.split(' ')[0]}` + ' ' + `${tt.split(' ')[1]}` + ' ' + `${tt.split(' ')[2]}`;
+		//time
+		const create_tm = getPullTime(Number(txsData.create_tm)) || '';
+		const sc_hash = d.data.contents.scHash || '';
+		const action = txsData.action;
+
+		/*accountNum -> hexa to decimal*/
+		let accountNumHexaFrom = '';
+		let accountNumHexaTo = '';
+		let dstAccountNumHexa = '';
+		accountNumHexaFrom = BigInt(txsData.from_account).toString('16').toUpperCase();
+		accountNumHexaTo = BigInt(txsData.to_account).toString('16').toUpperCase();
+		dstAccountNumHexa = BigInt(txsData.dst_account).toString('16').toUpperCase();	
+		
+		let from_account = '';
+		let to_account = '';
+
+		//if c_action != 0, it's a utility token(stable price). So use dst_account as 'to' destination
+		//if c_action == 0, it's a security token(volatie price).
+		if (action == 'TRANSFER') {
+			if (txsData.c_action != 0) {
+				(dstAccountNumHexa != '0') ? to_account = dstAccountNumHexa : to_account = '0000000000000000';				
+			}
+			else {
+				(accountNumHexaTo != '0') ? to_account = accountNumHexaTo : to_account = '0000000000000000';			
+			}
+			//when action is "TRANSFER", display logo image
+			$('#tokenLogo').html(		
+				`<img style="width:60px; height:60px" src='${imgURL}:80/mainnetAction/${txsData.c_action}.svg' ></img>`
+			);
+		}
+		else {
+			(accountNumHexaTo != '0') ? to_account = accountNumHexaTo : to_account = '0000000000000000';
+			// display transparent as logo image
+			$('.coinlogo' ).css( "background-color", "transparent" );			
+		}
+
+		(accountNumHexaFrom != '0') ? from_account = accountNumHexaFrom : from_account = '0000000000000000';	
+
+		const signed_pubkey = base58(txsData.signed_pubkey) || '';
+		//	console.log("signed_pubkey:" + signed_pubkey);
+		const subnet_id = txsData.subnet_id || '';
+		const db_key = txsData.db_key;
+	
+		const amount = new Intl.NumberFormat().format(txsData.amount);
+		const confirmed = txsData.confirmed;
+
+		$('#createtm').html(age + ' | ' + create_tm);
+
+		$('#fromAcc').html(
+			`<div>			
+				<span value="${from_account}" data-title="${from_account}">${from_account}
+				</span>
+			</div>`
+		);
+		$('#fromAccCopy').html(
+			`<span value="${from_account}"  class="image" alt="logo" OnClick="javascript:copy_to_clipboard('${from_account}')" ></span>`
+		);
+
+		$('#toAcc').html(
+			`<div>			
+				<span value="${to_account}" data-title="${to_account}">${to_account}
+				</span>
+			</div>`
+		);
+		$('#toAccCopy').html(
+			`<span value="${to_account}"  class="image" alt="logo" OnClick="javascript:copy_to_clipboard('${to_account}')" ></span>`
+		);
+
+		if (detectMob()) {
+			$('#scHash').html(
+				`<div>			
+					<span value="${sc_hash}" data-title="${sc_hash}">${CheckMaxString(sc_hash, 22)}
+					</span>
+				</div>`
+			);
+			$('#scHashCopy').html(
+				`<span value="${sc_hash}"  class="image" alt="logo" OnClick="javascript:copy_to_clipboard('${sc_hash}')" ></span>`
+			);
+
+			$('#signedPubkey').html(
+				`<div>			
+					<span value="${signed_pubkey}" data-title="${signed_pubkey}">${CheckMaxString(signed_pubkey, 22)}
+					</span>
+				</div>`
+			);
+			$('#signedPubkeyCopy').html(
+				`<span value="${signed_pubkey}"  class="image" alt="logo" OnClick="javascript:copy_to_clipboard('${signed_pubkey}')" ></span>`
+			);
+		} else {
+
+			$('#scHash').html(
+				`<div>			
+					<span value="${sc_hash}" data-title="${sc_hash}">${sc_hash}
+					</span>
+				</div>`
+			);
+			$('#scHashCopy').html(
+				`<span value="${sc_hash}"  class="image" alt="logo" OnClick="javascript:copy_to_clipboard('${sc_hash}')" ></span>`
+			);
+
+			$('#signedPubkey').html(
+				`<div>			
+					<span value="${signed_pubkey}" data-title="${signed_pubkey}">${signed_pubkey}
+					</span>
+				</div>`
+			);
+			$('#signedPubkeyCopy').html(
+				`<span value="${signed_pubkey}"  class="image" alt="logo" OnClick="javascript:copy_to_clipboard('${signed_pubkey}')" ></span>`
+			);
+		}
+
+		$('#action').html(action);
+		$('#amount').html(amount);
+		$('#status').html(confirmed);
+		$('#subnetId').html(subnet_id);
+
+		scHash && contractDetails(contractRawData);
+	};
+
+	function contractDetails(data) {
+		const rawData = document.getElementById("contractRawData");
+		const jsonData = JSON.parse(data)
+		//console.log("jsonData:" + JSON.stringify(jsonData));		
+		
+		const elem = document.getElementById('contract-raw-data');
+		elem.innerHTML = prettyPrintJson.toHtml(jsonData, { lineNumbers: true });
+
+		// json 값들 중 제일 긴 값의 width를 Contract Raw Data의 json-lines 클래스에 적용함.
+		let scWidthLeng = 0;
+		let sigWidthLeng = 0;
+		let pubkeyWidthLeng = 0;
+		let maxLength = 0;
+
+		if(jsonData.contents.sc != null || jsonData.contents.sc != undefined)
+		{
+			scWidthLeng = jsonData.contents.sc.length * 9.5;
+		//	console.log("sc_length:" + jsonData.contents.sc.length);		
+		}
+		
+		if(jsonData.sig != null || jsonData.sig != undefined)
+		{	
+			sigWidthLeng = jsonData.sig.length * 8.5;
+		//	console.log("sig_length:" + jsonData.sig.length);		
+		}
+		
+		if(jsonData.signed_pubkey != null || jsonData.signed_pubkey != undefined)
+		{
+			pubkeyWidthLeng = jsonData.signed_pubkey.length * 8.5;
+		//	console.log("signed_pubkey_length:" + jsonData.signed_pubkey.length);
+		}
+		
+		maxLength = Math.max(scWidthLeng, sigWidthLeng, pubkeyWidthLeng)
+		//console.log("maxLength:" + maxLength);	
+
+		$( ".json-lines" ).css( "width", maxLength );
+	};
+
+
+</script>

@@ -1,0 +1,475 @@
+<!-- NAVBAR HOME-->
+<%- include('../../pages/navBar/navBarTransfer') %>
+
+<!--  BEGIN MAIN CONTAINER  -->
+<div class="main-container" id="container">
+
+    <!--  BEGIN OVERLAY  -->
+    <div class="overlay"></div>
+    <div class="cs-overlay"></div>
+    <div class="search-overlay"></div>
+    <!-- END OVERLAY -->
+
+     <!--  BEGIN CONTENT PART  -->     
+    <div class="layout-px-spacing">
+        <div class="row layout-top-spacing">          
+            <!--  SEARCH BAR  -->
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">              
+                <%- include('../../pages/navBar/searchBar') %>      
+            </div>
+           
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">    
+                <h3 class="page-title" style="margin:30px 0px 20px 20px">Transfer</h3>
+            </div>
+        
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="transferCell-container">
+                    <div class="title-box">
+                        <span style="margin:0 6px 0 0">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M22.2255 15.9755C22.2255 16.722 21.7402 17.5107 20.7177 18.1508C19.7057 18.7845 18.2609 19.2009 16.6258 19.2009C14.9907 19.2009 13.546 18.7845 12.5339 18.1508C11.5114 17.5107 11.0261 16.722 11.0261 15.9755C11.0261 15.2289 11.5114 14.4402 12.5339 13.8001C13.546 13.1664 14.9907 12.75 16.6258 12.75C18.2609 12.75 19.7057 13.1664 20.7177 13.8001C21.7402 14.4402 22.2255 15.2289 22.2255 15.9755Z"
+                                    fill="white" stroke="black" stroke-width="1.5" />
+                                <path
+                                    d="M22.2255 12.9755C22.2255 13.722 21.7402 14.5107 20.7177 15.1508C19.7057 15.7845 18.2609 16.2009 16.6258 16.2009C14.9907 16.2009 13.546 15.7845 12.5339 15.1508C11.5114 14.5107 11.0261 13.722 11.0261 12.9755C11.0261 12.2289 11.5114 11.4402 12.5339 10.8001C13.546 10.1664 14.9907 9.75 16.6258 9.75C18.2609 9.75 19.7057 10.1664 20.7177 10.8001C21.7402 11.4402 22.2255 12.2289 22.2255 12.9755Z"
+                                    fill="white" stroke="black" stroke-width="1.5" />
+                                <path d="M22.5 17V6M10.5 17V6.78571" stroke="black" />
+                                <path
+                                    d="M22.2253 9.97546C22.2253 10.722 21.74 11.5107 20.7175 12.1508C19.7054 12.7845 18.2607 13.2009 16.6256 13.2009C14.9905 13.2009 13.5457 12.7845 12.5337 12.1508C11.5112 11.5107 11.0259 10.722 11.0259 9.97546C11.0259 9.22894 11.5112 8.44023 12.5337 7.80007C13.5457 7.16643 14.9905 6.75 16.6256 6.75C18.2607 6.75 19.7054 7.16643 20.7175 7.80007C21.74 8.44023 22.2253 9.22894 22.2253 9.97546Z"
+                                    fill="white" stroke="black" stroke-width="1.5" />
+                                <path
+                                    d="M22.2255 6.97546C22.2255 7.72198 21.7402 8.51069 20.7177 9.15085C19.7057 9.78449 18.2609 10.2009 16.6258 10.2009C14.9907 10.2009 13.546 9.78449 12.5339 9.15085C11.5114 8.51069 11.0261 7.72198 11.0261 6.97546C11.0261 6.22894 11.5114 5.44023 12.5339 4.80007C13.546 4.16643 14.9907 3.75 16.6258 3.75C18.2609 3.75 19.7057 4.16643 20.7177 4.80007C21.7402 5.44023 22.2255 6.22894 22.2255 6.97546Z"
+                                    fill="white" stroke="black" stroke-width="1.5" />
+                                <circle cx="7.46012" cy="14.5398" r="5.71012" fill="white" stroke="black"
+                                    stroke-width="1.5" />
+                                <path d="M18.25 5.25H15.25V6.9375M15.25 8.625V6.9375M15.25 6.9375H17.1591"
+                                    stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="M8.95093 12.3865H6.52148V14.5398M6.52148 16.6932V14.5398M6.52148 14.5398H8.0675"
+                                    stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </span>
+                        <span>Total Tokens</span>
+                    </div>
+                    <div class="txnsInfo-box">
+                        <span id="tokenTotalCnt"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="transferCell-container">
+
+                    <div class="title-box2">
+                        <span>24H</span>
+                    </div>
+                    <div class="txnsInfo-box2">
+                        <span>+</span>
+                        <span id="token24HCnt"></span>
+                    </div>
+                </div>
+            </div>   
+     
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                <div class="transferTable">
+                    <ul class="nav nav-pills mb-3 mt-3" id="pills-tab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="pills-all-tab" data-toggle="pill" href="#pills-all"
+                                role="tab" aria-controls="pills-all" aria-selected="true">All</a>
+                        </li>
+
+                    </ul>
+
+                    <div class="tab-content" id="pills-tabContent">
+                        <div class="tab-pane fade show active" id="pills-transfer" role="tabpanel"
+                            aria-labelledby="pills-transfer-tab">
+                            <div class="table-responsive">
+                                <table id="transfer-config" class="table dt-table-hover dataTable"
+                                    style="width:100%; margin: 0 auto 8px;" role="grid"
+                                    aria-describedby="transfer-config_info">
+                                    <thead style="background-color: #f4e6e6;">
+                                        <tr role="row">
+                                            <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 200px;">Txn Hash
+                                            </th>
+                                            <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">Block No
+                                            </th>
+                                            <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 150px">From
+                                            </th>
+                                            <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 150px;">To
+                                            </th>
+                                            <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 150px;">Amount
+                                            </th>
+                                            <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 120px;">Action
+                                            </th>
+                                            <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">BPs
+                                            </th>
+                                            <th class="sorting" tabindex="0" rowspan="1" colspan="1">From
+                                            </th>
+                                            <th class="sorting" tabindex="0" rowspan="1" colspan="1">To
+                                            </th>
+                                            <th class="sorting" tabindex="0" rowspan="1" colspan="1">TokenAction
+                                            </th>
+                                            <th class="sorting" tabindex="0" rowspan="1" colspan="1">Txn HashO
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div>
+    <!--  END CONTENT PART  -->
+
+    <!-- SEARCH FILTER MENU-->
+    <div class="filter-dropdown-menu" id="drop-content" style="display: none;">
+        <ul>
+            <li onClick="setFilter('All Filters');"> All Filters</li>
+            <li onClick="setFilter('Token Sym.');"> Token Sym.</li>
+            <li onClick="setFilter('Token Name');"> Token Name</li>
+            <li onClick="setFilter('Account ID');"> Account ID</li>
+            <li onClick="setFilter('Account No.');"> Account No.</li>
+            <li onClick="setFilter('Txn ID');"> Txn ID</li>
+            <li onClick="setFilter('Block No.');"> Block No.</li>
+        </ul>
+    </div>
+
+</div>
+
+<style>
+    .navbar .navbar-item .nav-item.user-profile-dropdown a.user .media img {
+        box-shadow: 0 0px 0px rgb(0 0 0 / 7%), 0 0px 0px rgb(0 0 0 / 14%);
+    }
+   
+    .layout-px-spacing {
+        padding: 0 32px!important;
+        min-height: calc(100vh - 125px)!important;
+    }
+
+    .layout-spacing {
+        padding: 0px 10px 20px;
+    }
+
+    .layout-top-spacing {
+        margin-top: 20px;
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        flex-basis: 1200px;
+        overflow: auto;
+        max-width: 1200px;
+        margin: 0px auto;
+    }
+
+    *, ::after, ::before {
+        box-sizing: border-box;
+    }  
+
+    .transferCell-container {
+        display: flex;
+        height: 80px;
+        flex-basis: 590px;
+        flex-grow: 1;
+        place-content: stretch stretch;
+        background-color: #fff;
+        background-clip: border-box;
+        padding: 20px 20px;
+        margin: 0;
+        box-sizing: border-box;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+        box-shadow: 0 0 40px 0 rgb(94 92 154 / 6%);
+        max-width: 590px;
+    }
+
+
+    .transfer-container {
+        display: grid;
+        height: 100;
+        grid-template-columns: 1fr 1.5fr 1fr 1.5fr;
+        grid-template-rows: minmax(50px, auto);
+        place-content: stretch stretch;
+        background-color: #fff;
+        background-clip: border-box;
+        padding: 20px 20px;
+        box-sizing: border-box;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+        box-shadow: 0 0 40px 0 rgb(94 92 154 / 6%);
+    }
+
+    .title-box {
+        padding: 0px 10px;
+        align-self: center;
+        text-align: left;
+        font-size: 18px;
+        font-weight: 600;
+        color: #6d6d6d;
+    }
+
+    .txnsInfo-box {
+        flex-grow: 1;
+        align-self: center;
+        text-align: left;
+        font-size: 24px;
+        font-weight: 400;
+        color: black;
+        padding: 0 20px;
+    }
+
+    .title-box2 {
+        padding: 0px 10px;
+        align-self: center;
+        text-align: left;
+        font-size: 14px;
+        font-weight: 600;
+        color: #6d6d6d;
+    }
+
+    .txnsInfo-box2 {
+        flex-grow: 1;
+        align-self: center;
+        text-align: left;
+        font-size: 18px;
+        font-weight: 300;
+        color: #2d912c;
+        padding: 0 20px;
+    }
+
+    /* Hash의 길이가 다른 문제점을 해결하기 위해 문자당 width가 같은 monospace 계열 폰트를 사용
+    : Courier, Courier New, Lucida, Console, Monaco */
+    .monospace {
+        font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .alignLeft {
+        text-align: left;
+    }
+
+    .alignRight {
+        text-align: right;
+    }
+
+    .alignCenter {
+        text-align: center;
+    }
+
+    .textColor {
+        color: #d52e30;
+    }
+
+    .cursorPointer {
+        cursor: pointer;
+    }
+
+    .cursorPointer:hover {
+        color: #d52e30;
+    }
+
+    .container,
+    .container-fluid,
+    .container-sm,
+    .container-md,
+    .container-lg,
+    .container-xl {
+        width: 100%;
+        padding: 0;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .transferTable {
+        flex-basis: 1200px;
+        max-width: 1200px;
+        padding: 15px 30px;
+        position: relative;
+        box-sizing: border-box;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+        background-color: #fff;
+        color: black;
+        box-shadow: 0 0 40px 0 rgb(94 92 154 / 6%);
+    }
+
+    th,
+    td {
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    #transfer-config thead .sorting,
+    #transfer-config thead .sorting_asc,
+    #transfer-config thead .sorting_desc {
+        background: none;
+        cursor: default;
+    }
+
+
+    .custom-context-menu {
+        position: absolute;
+        box-sizing: border-box;
+        height: 30px;
+        min-width: 100px;
+        background-color: #f9d781;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+    }
+
+    .custom-context-menu ul {
+        list-style: none;
+        padding: 0;
+        background-color: transparent;
+    }
+
+    .custom-context-menu li {
+        padding: 3px 5px;
+        cursor: pointer;
+        color: black;
+        font-weight: 400;
+    }
+
+    .custom-context-menu li:hover {
+        background-color: #f0f0f0;
+        border: 1px solid #f0f0f0;
+        border-radius: 0.25rem;
+    }
+
+    .image {
+        width: 20px;
+        height: 30px;
+        content: url("/images/copy.svg");
+    }
+
+    .form-control {
+        height: auto;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0px 0px rgb(194 213 255 / 62%);
+        border: 1px solid #bfc9d4;
+    }
+
+    .input-group>.form-control:not(:first-child),
+    .input-group>.custom-select:not(:first-child) {
+        border-left: 0;
+        border-right: 0;
+    }
+
+    .input-group .input-group-prepend .input-group-text {
+        border: 1px solid #bfc9d4;
+        background-color: #fff;
+    }
+
+    .deleteTextBtnArea {
+        display: flex;
+        background-color: white;
+        padding: 0px 10px;
+        width: auto;
+        height: auto;
+        border: 1px solid #bfc9d4;
+        color: #3b3f5c;
+        border-radius: 0px;
+        border-left: 0;
+        border-right: 0;
+    }
+
+    .deleteTextBtn {
+        justify-content: center;
+        align-self: center;
+        background-color: white;
+        width: 20px;
+        content: url("/images/close-button.svg");
+        cursor: pointer;
+    }
+
+    .searchDivider {
+        border-left: 1px solid #bfc9d4;
+        height: 50px;
+    }
+
+    .searchFilters {
+        display: grid;
+        grid-template-columns: 103px 20px;
+        background-color: white;
+        min-width: 133px;
+        height: auto;
+        border: 1px solid #bfc9d4;
+        color: #3b3f5c;
+        font-size: 15px;
+        letter-spacing: 1px;
+        padding: 12px 0px 12px 20px;
+        margin-left: 0px;
+        margin-right: 0px;
+        border-radius: 0px 6px 6px 0px;
+        border-left: 0;
+        cursor: pointer;
+    }
+
+    .searchFilters:hover {
+        color: #d52e30;
+    }
+
+    .searchFilterTitle {
+        text-align: center;
+    }
+
+    .arrowIcon {
+        align-self: center;
+        width: 15px;
+        height: 15px;
+        content: url("/images/arrow-down.png");
+    }
+
+    .filter-dropdown-menu {
+        position: absolute;
+        box-sizing: border-box;
+        min-width: 133px;
+        background-color: #ffffff;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+    }
+
+    .filter-dropdown-menu ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        background-color: transparent;
+    }
+
+    .filter-dropdown-menu li {
+        padding: 10px 30px;
+        cursor: pointer;
+        color: black;
+    }
+
+    .filter-dropdown-menu li:hover {
+        background-color: #f0f0f0;
+    }
+
+
+    /* 탑메뉴 active 이외 메뉴 호버시 아이콘 문자열 빨간색 처리 */
+    .topbar-nav.header nav#topbar ul.menu-categories li.menu>a:hover svg:not(.feather-chevron-down) {
+        color: #d52e30;
+        fill: #d52e30;
+    }
+
+    .topbar-nav.header nav#topbar ul.menu-categories li.menu a>div svg:not(.feather-chevron-down) {
+        stroke-width: 1.5px;
+        stroke: black;
+    }
+
+    .topbar-nav.header nav#topbar ul.menu-categories li.menu.active a[aria-expanded="false"]>div svg:not(.feather-chevron-down),
+    .topbar-nav.header nav#topbar ul.menu-categories li.menu.active a[aria-expanded="true"]>div svg:not(.feather-chevron-down) {
+        stroke-width: 1.5px;
+        stroke: white;
+    }
+</style>

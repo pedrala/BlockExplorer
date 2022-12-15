@@ -1,0 +1,539 @@
+<!-- NAVBAR HOME-->
+<%- include('../../pages/navBar/navBarBlocks') %>
+
+<!--  BEGIN MAIN CONTAINER  -->
+<div class="main-container" id="container">
+
+    <!--  BEGIN OVERLAY  -->
+    <div class="overlay"></div>
+    <div class="cs-overlay"></div>
+    <div class="search-overlay"></div>
+    <!-- END OVERLAY -->
+
+    <!--Blocks-->
+    <div class="layout-px-spacing">
+        <div class="row layout-top-spacing">          
+            <!--  SEARCH BAR  -->      
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">               
+               <%- include('../../pages/navBar/searchBar') %>    
+            </div>
+      
+            <!--  BEGIN CONTENT PART  -->    
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                <h3 class="page-title" style="margin:30px 0px 20px 20px">Blocks</h3>
+            </div>     
+    
+            <!--Total Blocks-->
+            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="blocks-container">
+                    <div class="data-item-left">
+                        <span class="title-box1">
+                            <span style="margin:0 6px 0 0">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 3L20 7.5V16.5L12 21L4 16.5V7.5L12 3Z" stroke="black" stroke-width="1.5"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M12 12L20 7.5" stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M12 12V21" stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M12 12L4 7.5" stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M16 5.25L8 9.75" stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                            <span> Total Blocks</span>
+                        </span>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="data-item-left">
+                        <span class="title-box2" style="margin-right:0px">Total</span>                      
+                    </div>
+                    <div class="data-item-right">
+                        <span class="title-box2" style="margin-right:0px">24H</span>                       
+                    </div>
+
+                    <div class="data-item-left">               
+                        <span class="value-box" id="totalBlkCnt"> </span>
+                    </div>
+                    <div class="data-item-right">                   
+                        <span class="value-box3" id="totalBlk24hCnt"> </span>
+                    </div>
+                </div>
+            </div>
+
+            <!--Rewards-->
+            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="blocks-container">
+                    <div class="data-item-left">
+                        <span class="title-box1">
+                            <span style="margin:0 6px 0 0">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M12 15C15.3137 15 18 12.3137 18 9C18 5.68629 15.3137 3 12 3C8.68629 3 6 5.68629 6 9C6 12.3137 8.68629 15 12 15Z"
+                                        stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M12.002 15.0033L15.402 20.8923L17 17.6602L20.5981 17.8923L17.1981 12.0033"
+                                        stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path
+                                        d="M6.802 12.0033L3.402 17.8923L7.00008 17.6602L8.59815 20.8923L11.9982 15.0033"
+                                        stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                            <span>Rewards</span>
+
+                        </span>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="data-item-left">
+                        <span class="title-box2" style="margin-right:0px">Total</span>                       
+                    </div>
+                    <div class="data-item-right">
+                        <span class="title-box2" style="margin-right:0px">24H</span>                        
+                    </div>
+
+                    <div class="data-item-left">                     
+                        <span class="value-box" id="totalRewardsCnt"> </span>
+                    </div>
+                    <div class="data-item-right">                     
+                        <span class="value-box2" id="totalRewards24hCnt"> </span>
+                    </div>
+                </div>
+            </div>
+
+            <!--Burned FIN-->
+            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="blocks-container">
+                    <div class="data-item-left">
+                        <span class="title-box1">
+                            <span style="margin:0 6px 0 0">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M12 12C14 9.04 12 5 11 4C11 7.038 9.227 8.741 8 10C6.774 11.26 6 13.24 6 15C6 16.5913 6.63214 18.1174 7.75736 19.2426C8.88258 20.3679 10.4087 21 12 21C13.5913 21 15.1174 20.3679 16.2426 19.2426C17.3679 18.1174 18 16.5913 18 15C18 13.468 16.944 11.06 16 10C14.214 13 13.209 13 12 12Z"
+                                        stroke="black" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                            <span> Burned FIN</span>
+
+                        </span>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="data-item-left">
+                        <span class="title-box2" style="margin-right:0px">Total</span>                     
+                    </div>
+                    <div class="data-item-right">
+                        <span class="title-box2" style="margin-right:0px">24H</span>                      
+                    </div>
+
+                    <div class="data-item-left">           
+                        <span class="value-box" id="totalBurnedFINCnt"> </span>
+                    </div>
+                    <div class="data-item-right">             
+                        <span class="value-box2" id="totalBurnedFIN24hCnt"> </span>
+                    </div>
+                </div>
+            </div>
+      
+            <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
+                <div class="blockTable">
+                    <div id="block-config_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                        <div class="table-responsive">
+                            <table id="block-config" class="table dt-table-hover dataTable"
+                                style="width:100%; margin: 0 auto 8px;" role="grid"
+                                aria-describedby="block-config_info">
+                                <thead style="background-color: #f4e6e6;">
+                                    <tr role="row">
+                                        <th class="sorting" tabindex="0"  style="width: 90px;">
+                                            Block No
+                                        </th>
+                                        <th tabindex="0"   style="width: 170px;">
+                                            <span id="ageTime">Age</span>
+                                            <span role="img" aria-label="retweet" class="anticon anticon-retweet"
+                                                style="vertical-align: 0px; margin-left: 10px;">
+                                                <svg viewBox="0 0 1024 1024" focusable="false" data-icon="retweet"
+                                                    width="1em" height="1em" fill="currentColor" aria-hidden="true">
+                                                    <path
+                                                        d="M136 552h63.6c4.4 0 8-3.6 8-8V288.7h528.6v72.6c0 1.9.6 3.7 1.8 5.2a8.3 8.3 0 0011.7 1.4L893 255.4c4.3-5 3.6-10.3 0-13.2L749.7 129.8a8.22 8.22 0 00-5.2-1.8c-4.6 0-8.4 3.8-8.4 8.4V209H199.7c-39.5 0-71.7 32.2-71.7 71.8V544c0 4.4 3.6 8 8 8zm752-80h-63.6c-4.4 0-8 3.6-8 8v255.3H287.8v-72.6c0-1.9-.6-3.7-1.8-5.2a8.3 8.3 0 00-11.7-1.4L131 768.6c-4.3 5-3.6 10.3 0 13.2l143.3 112.4c1.5 1.2 3.3 1.8 5.2 1.8 4.6 0 8.4-3.8 8.4-8.4V815h536.6c39.5 0 71.7-32.2 71.7-71.8V480c-.2-4.4-3.8-8-8.2-8z">
+                                                    </path>
+                                                </svg>
+                                            </span>
+                                        </th>
+                                        <th class="sorting" tabindex="0"  style="width: 60px;">Tx Count</th>
+                                        <th class="sorting" tabindex="0"  style="width: 200px;">Block Hash</th>
+                                        <th class="sorting" tabindex="0"  style="width: 150px;">Status</th>
+                                        <th class="sorting" tabindex="0"  style="width: 100px;">Reward</th>
+                                        <th class="sorting" tabindex="0"  style="width: 100px;">Burned FIN</th>
+                                        <th class="sorting" tabindex="0"  style="width: 120px;">BPs</th>
+                                        <th class="sorting" tabindex="0"  style="width: 150px;">Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="block">
+
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>        
+    </div>
+    <!--  END CONTENT PART  -->
+
+    <!-- SEARCH FILTER MENU-->
+    <div class="filter-dropdown-menu" id="drop-content" style="display: none;">
+        <ul>
+            <li onClick="setFilter('All Filters');"> All Filters</li>
+            <li onClick="setFilter('Token Sym.');"> Token Sym.</li>
+            <li onClick="setFilter('Token Name');"> Token Name</li>
+            <li onClick="setFilter('Account ID');"> Account ID</li>
+            <li onClick="setFilter('Account No.');"> Account No.</li>
+            <li onClick="setFilter('Txn ID');"> Txn ID</li>
+            <li onClick="setFilter('Block No.');"> Block No.</li>
+        </ul>
+    </div>
+
+</div>
+
+<style>
+    .navbar .navbar-item .nav-item.user-profile-dropdown a.user .media img {
+        box-shadow: 0 0px 0px rgb(0 0 0 / 7%), 0 0px 0px rgb(0 0 0 / 14%);
+    }
+
+    .layout-px-spacing {
+        padding: 0 32px!important;
+        min-height: calc(100vh - 125px)!important;
+    }
+
+    .layout-spacing {
+        padding: 0px 10px 20px;
+    }
+
+    .layout-top-spacing {
+        margin-top: 20px;
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        flex-basis: 1200px;
+        overflow: auto;
+        max-width: 1200px;
+        margin: 0px auto;
+    }
+
+    *, ::after, ::before {
+        box-sizing: border-box;
+    }  
+
+    .blocks-container {
+        display: grid;
+        height: 150px;
+        grid-template-columns: 1.6fr 1fr;
+        grid-template-rows: minmax(40px, auto) minmax(30px, auto) minmax(50px, auto);
+        place-content: stretch stretch;
+        background-color: #fff;
+        background-clip: border-box;
+        padding: 10px 30px 10px;
+        box-sizing: border-box;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+        box-shadow: 0 0 40px 0 rgb(94 92 154 / 6%);
+    }
+
+    .data-item-left {
+        align-self: center;
+        text-align: left;
+    }
+
+    .data-item-right {
+        align-self: center;
+        text-align: left;
+    }
+
+    .title-box1 {
+        align-self: center;
+        font-size: 18px;
+        font-weight: 600;
+        color: #6d6d6d;
+    }
+
+    .title-box2 {
+        align-self: center;
+        font-size: 14px;
+        font-weight: 600;
+        color: #6d6d6d;
+    }
+
+    .value-box {
+        align-self: center;
+        font-size: 24px;
+        font-weight: 400;
+        color: black;
+        margin-left: 5px;
+    }
+
+    .value-box2 {
+        align-self: center;
+        font-size: 18px;
+        font-weight: 300;
+        color: #2d912c;
+        margin-left: 5px;
+    }
+
+    .value-box3 {
+        align-self: center;
+        font-size: 18px;
+        font-weight: 300;
+        color: #2d912c;
+        margin-left: 0px;
+    }
+
+    /* Hash의 길이가 다른 문제점을 해결하기 위해 문자당 width가 같은 monospace 계열 폰트를 사용
+    : Courier, Courier New, Lucida, Console, Monaco */
+    .monospace {
+        font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .alignLeft {
+        text-align: left;
+    }
+
+    .alignRight {
+        text-align: right;
+    }
+
+    .alignCenter {
+        text-align: center;
+    }
+
+    .textColor {
+        color: #d52e30;
+    }
+
+    .container,
+    .container-fluid,
+    .container-sm,
+    .container-md,
+    .container-lg,
+    .container-xl {
+        width: 100%;
+        padding: 0;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .blockTable {
+        flex-basis: 1200px;
+        max-width: 1200px;
+        padding: 15px 30px;
+        position: relative;
+        box-sizing: border-box;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+        background-color: #fff;
+        color: black;
+        box-shadow: 0 0 40px 0 rgb(94 92 154 / 6%);
+    }
+
+    .cursorDefault {
+        cursor: default;
+    }
+
+    .cursorPointer {
+        cursor: pointer;
+    }
+
+    .cursorPointer:hover {
+        color: #d52e30;
+    }
+
+    /* table.dataTable tbody tr:hover {
+        color:#d52e30 !important;
+    } */
+
+    th,
+    td {
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    #block-config thead .sorting,
+    #block-config thead .sorting_asc,
+    #block-config thead .sorting_desc {
+        background: none;
+        cursor: default;
+    }
+
+    .custom-context-menu {
+        position: absolute;
+        box-sizing: border-box;
+        height: 30px;
+        min-width: 100px;
+        background-color: #f9d781;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+    }
+
+    .custom-context-menu ul {
+        list-style: none;
+        padding: 0;
+        background-color: transparent;
+    }
+
+    .custom-context-menu li {
+        padding: 3px 5px;
+        cursor: pointer;
+        color: black;
+        font-weight: 400;
+    }
+
+    .custom-context-menu li:hover {
+        background-color: #f0f0f0;
+        border: 1px solid #f0f0f0;
+        border-radius: 0.25rem;
+    }
+
+    .image {
+        width: 20px;
+        height: 30px;
+        content: url("/images/copy.svg");
+    }
+
+    .form-control {
+        height: auto;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0px 0px rgb(194 213 255 / 62%);
+        border: 1px solid #bfc9d4;
+    }
+
+    .input-group>.form-control:not(:first-child),
+    .input-group>.custom-select:not(:first-child) {
+        border-left: 0;
+        border-right: 0;
+    }
+
+    .input-group .input-group-prepend .input-group-text {
+        border: 1px solid #bfc9d4;
+        background-color: #fff;
+    }
+
+    .deleteTextBtnArea {
+        display: flex;
+        background-color: white;
+        padding: 0px 10px;
+        width: auto;
+        height: auto;
+        border: 1px solid #bfc9d4;
+        color: #3b3f5c;
+        border-radius: 0px;
+        border-left: 0;
+        border-right: 0;
+    }
+
+    .deleteTextBtn {
+        justify-content: center;
+        align-self: center;
+        background-color: white;
+        width: 20px;
+        content: url("/images/close-button.svg");
+        cursor: pointer;
+    }
+
+    .searchDivider {
+        border-left: 1px solid #bfc9d4;
+        height: 50px;
+        /* height: calc(100%-10px); */
+        /* top:10px;
+        bottom:10px; */
+    }
+
+    .searchFilters {
+        display: grid;
+        grid-template-columns: 103px 20px;
+        background-color: white;
+        min-width: 133px;
+        height: auto;
+        border: 1px solid #bfc9d4;
+        color: #3b3f5c;
+        font-size: 15px;
+        letter-spacing: 1px;
+        padding: 12px 0px 12px 20px;
+        margin-left: 0px;
+        margin-right: 0px;
+        border-radius: 0px 6px 6px 0px;
+        border-left: 0;
+        cursor: pointer;
+    }
+
+    .searchFilters:hover {
+        color: #d52e30;
+    }
+
+    .searchFilterTitle {
+        text-align: center;
+    }
+
+    .arrowIcon {
+        align-self: center;
+        width: 15px;
+        height: 15px;
+        content: url("/images/arrow-down.png");
+    }
+
+    .filter-dropdown-menu {
+        position: absolute;
+        box-sizing: border-box;
+        min-width: 133px;
+        background-color: #ffffff;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 0.25rem;
+    }
+
+    .filter-dropdown-menu ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        background-color: transparent;
+    }
+
+    .filter-dropdown-menu li {
+        padding: 10px 30px;
+        cursor: pointer;
+        color: black;
+    }
+
+    .filter-dropdown-menu li:hover {
+        background-color: #f0f0f0;
+    }
+
+    /* 데이타테이블과 페이지네이션사이 간격 조정 */
+    table.dataTable {
+        margin: 0 auto 8px;
+        clear: both;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    /* 탑메뉴 active 이외 메뉴 호버시 아이콘 문자열 빨간색 처리 */
+    .topbar-nav.header nav#topbar ul.menu-categories li.menu>a:hover svg:not(.feather-chevron-down) {
+        color: #d52e30;
+        fill: #d52e30;
+    }
+
+    .topbar-nav.header nav#topbar ul.menu-categories li.menu a>div svg:not(.feather-chevron-down) {
+        stroke-width: 1.5px;
+        stroke: black;
+    }
+</style>

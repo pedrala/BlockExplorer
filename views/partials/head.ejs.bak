@@ -1,0 +1,46 @@
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+<title>FINL Scan</title>
+<link rel="icon" type="image/x-icon" href="/images/favicon.ico"/>
+<link href="/public/assets/css/loader.css" rel="stylesheet" type="text/css" />
+<script src="/public/assets/js/loader.js"></script>
+<!-- BEGIN GLOBAL MANDATORY STYLES -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.2.2/static/pretendard-dynamic-subset.css" rel="stylesheet" type="text/css"/>
+<!-- <link href="https://fonts.googleapis.com/css?family=Quicksand:400,500,600,700&display=swap" rel="stylesheet"> -->
+<link href="/public/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="/public/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="/public/assets/css/plugins.css" rel="stylesheet" type="text/css" />
+<link href="/public/assets/css/dashboard/dash_2.css" rel="stylesheet" type="text/css" />  <!-- Details 페이지의 왼쪽 카드 표현시 필요 -->
+<link href="/public/assets/css/elements/tooltip.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.css">
+
+<!-- END GLOBAL MANDATORY STYLES -->
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="/public/assets/js/libs/jquery-3.1.1.min.js"></script>
+<script src="/public/bootstrap/js/popper.min.js"></script>
+<script src="/public/bootstrap/js/bootstrap.min.js"></script>
+<script src="/public/js/perfect-scrollbar.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.js"></script>
+<script src="/public/assets/js/moment.js"></script>
+<script src="/public/js/errorCode.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/public/assets/js/app.js"></script>
+<!-- <script src="../public/js/script.js"></script> -->
+<!-- <script src="/public/assets/js/custom.js"></script> -->
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7ZMFEXKY74"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7ZMFEXKY74');
+</script>
+<script>
+    $(document).ready(function () {
+        App.init();
+    });
+</script>

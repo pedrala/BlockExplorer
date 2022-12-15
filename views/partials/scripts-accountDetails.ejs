@@ -1,0 +1,466 @@
+<script>
+	const dataObj = {};
+	const englishNspecialChar = /^[A-Za-z0-9\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]*$/;
+	$(document).ready(function () {
+		const accountParam = '<%=accountNum%>';
+
+		if (!isNaN(accountParam)) {
+			dataObj.accountNum = accountParam;
+			dataObj.accountId = '';
+		} else {
+			dataObj.accountNum = '';
+			dataObj.accountId = accountParam;
+		}
+
+		//console.log("dataObj:" + JSON.stringify(dataObj));
+
+		//if obj is empty or undefined
+		if ((dataObj && Object.keys(dataObj).length === 0 && dataObj.constructor === Object)
+			|| (dataObj && dataObj.accountNum == 'undefined' && dataObj.constructor === Object)
+			|| !(englishNspecialChar.test(dataObj.accountId) && dataObj.constructor === Object))  //if obj is non-english string(ex:Korean)
+		{
+			window.location.href = URL + '/error-page/' + 'default';
+
+		} else {
+			if (dataObj.accountNum == undefined || dataObj.accountNum == '')
+				getAccountNumById()
+			else {
+				getAccountDetailInfo();
+			}
+		}
+	});
+
+	/**
+	 * fetching accountNumber for account  
+	 * @event getAccountNumById
+	 * @param 
+	 */
+	function getAccountNumById() {
+		$.ajax({
+			type: "get",
+			url: `${URL}${ACCOUNTNO_BYID}`,
+			data: dataObj,
+			success: function (d) {
+				if (d.data == 'error') {
+					window.location.href = URL + '/error-page/' + 'default';
+				} else {
+					dataObj.accountNum = d.data;
+					//console.log("accountNum:" + dataObj.accountNum);
+					getAccountDetailInfo()
+				}
+			},
+			error: function (request, status, error) {
+				window.location.href = URL + '/error-page/' + 'default';
+				//	console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+			},
+		});
+	};
+
+	/**
+   * fetching detail data for account  
+   * @event getAccountDetailInfo
+   * @param 
+   */
+	function getAccountDetailInfo() {
+		$.ajax({
+			type: "get",
+			url: `${URL}${ACCOUNT_DETAIL_INFO}`,
+			data: dataObj,
+			success: function (d) {
+				if (d.data == 'error') {
+					window.location.href = URL + '/error-page/' + 'default';
+				} else {
+					tableStart(d);
+				}
+			},
+			error: function (request, status, error) {
+				window.location.href = URL + '/error-page/' + 'default';
+				//	console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+			},
+		});
+	};
+
+	/**
+	 * displaying detail data on page  
+	 * @event tableStart
+	 * @param 
+	 */
+	function tableStart(d) {
+		if (d.data.errorCode == 3000) {
+			window.location.href = URL + '/error-page/' + d.data.contents.msg;
+		}
+
+		const allData = (d.data.contents.uAccountInfo) ? d.data.contents.uAccountInfo : d.data.contents.tAccountInfo;
+
+		let balData = (d.data.contents.uAccountInfo) ? d.data.contents.uAccountBalance : '';
+		let bal24hData = (d.data.contents.uAccountInfo) ? d.data.contents.uAccountBalancePrv24h : '';
+		let bal30dData = (d.data.contents.uAccountInfo) ? d.data.contents.uAccountBalancePrv30d : '';
+
+		// console.log("allData:" + JSON.stringify(allData));
+		// console.log("balData:" + JSON.stringify(balData));
+		// console.log("bal24hData:" + JSON.stringify(bal24hData));
+		// console.log("bal30dData:" + JSON.stringify(bal30dData));
+
+		if (balData[0] == undefined) {
+			let balance = [{ balance: 0 }];
+			balData = [];
+			Object.assign(balData, balance);
+		}
+		if (bal24hData[0] == undefined) {
+			let balance = [{ balance: 0 }];
+			bal24hData = [];
+			Object.assign(bal24hData, balance);
+		}
+		if (bal30dData[0] == undefined) {
+			let balance = [{ balance: 0 }];
+			bal30dData = [];
+			Object.assign(bal30dData, balance)
+		}
+
+		const formatter = new Intl.NumberFormat('en-US', {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 9,
+		});
+
+		let change30d = parseFloat(balData[0].balance - bal30dData[0].balance)
+		let change24h = parseFloat(balData[0].balance - bal24hData[0].balance)
+
+		let change30dNumberFormat = formatter.format(Math.abs(change30d))
+		let change24hNumberFormat = formatter.format(Math.abs(change24h))
+
+		change30d = (change30d < 0 ? "-" + change30dNumberFormat : "+" + change30dNumberFormat)
+		change24h = (change24h < 0 ? "-" + change24hNumberFormat : "+" + change24hNumberFormat)
+
+		let txCnt = Number.parseInt(d.data.contents.uAccountTxsCnt);
+		//console.log("txCnt:" + JSON.stringify(txCnt));
+
+		//console.log("balance:" + JSON.stringify(balData[0].balance));
+		let bal = Number.parseFloat(balData[0].balance).toFixed(9);
+		//console.log("balance:" + bal);
+		bal = formatter.format(balData[0].balance);
+
+		$('#balance1').html(bal);
+		$('#balance2').html(bal);
+
+		$('#balChanges').html(change30d); //change24h
+
+		/*accountNum -> hexa to decimal*/
+		let accountNumHexa = '';
+		accountNumHexa = BigInt(allData.account_num).toString('16').toUpperCase();
+
+		let time = allData.create_tm;
+
+		//time calc for transaction table
+		time = time * 1;
+		const tt = moment(time).fromNow();
+
+		//age
+		const age = `${tt.split(' ')[0]}` + ' ' + `${tt.split(' ')[1]}` + ' ' + `${tt.split(' ')[2]}`;
+		//time
+		const create_tm = getPullTime(Number(allData.create_tm)) || '';
+		$('#createtm').html(age + ' | ' + create_tm);
+
+		const blk_num = leftZeroDelet(allData.blk_num) || '';
+		const blkNum = new Intl.NumberFormat().format(blk_num);
+		const accId = allData.account_id;
+		const dbKey = allData.db_key || '';
+		const ownerPk = base58(allData.owner_pk) || '';
+		const superPk = base58(allData.super_pk) || '';
+		const subnet_id = allData.subnet_id || '';
+
+		$('#accountId').html(accId);
+		$('#blkNum').html(blkNum);
+
+		//	$('#bp').html( allData.subnet_id);
+		//	$('#dbKey').html( allData.db_key);
+
+		if (detectMob()) {
+			$('#accountNum').html(
+				`<div>			
+					<span value="${accountNumHexa}" data-title="${accountNumHexa}">${CheckMaxString(accountNumHexa, 13)}
+					</span>
+				</div>`
+			);
+			$('#accountNumCopy').html(
+				`<span value="${accountNumHexa}"  class="image" alt="logo" OnClick="javascript:copy_to_clipboard('${accountNumHexa}')" ></span>`
+			);
+
+			$('#ownerPk').html(
+				`<div>			
+					<span value="${ownerPk}" data-title="${ownerPk}">${CheckMaxString(ownerPk, 13)}
+					</span>
+				</div>`
+			);
+			$('#ownerPkCopy').html(
+				`<span value="${ownerPk}"  class="image" alt="logo" OnClick="javascript:copy_to_clipboard('${ownerPk}')" ></span>`
+			);
+		} else {
+
+			$('#accountNum').html(
+				`<div>			
+					<span value="${accountNumHexa}" data-title="${accountNumHexa}">${accountNumHexa}
+					</span>
+				</div>`
+			);
+			$('#accountNumCopy').html(
+				`<span value="${accountNumHexa}"  class="image" alt="logo" OnClick="javascript:copy_to_clipboard('${accountNumHexa}')" ></span>`
+			);
+
+			$('#ownerPk').html(
+				`<div>			
+					<span value="${ownerPk}" data-title="${ownerPk}">${ownerPk}
+					</span>
+				</div>`
+			);
+			$('#ownerPkCopy').html(
+				`<span value="${ownerPk}"  class="image" alt="logo" OnClick="javascript:copy_to_clipboard('${ownerPk}')" ></span>`
+			);
+		}
+
+		$('#tokensNo').html(d.data.contents.numOfTokens);
+		$('#txCount').html(txCnt);
+
+		transDetailsTable(dataObj.accountNum);
+		
+		getNftByAccNum(dataObj.accountNum);
+	};
+
+	/**
+	 * rendering datatable for transaction data
+	 * @event transDetailsTable
+	 * @param
+	 */
+	function transDetailsTable(acc_num) {
+
+		let dataObj = {};
+		dataObj.accountNum = acc_num;
+		//	console.log("accountNum:" + JSON.stringify(dataObj.accountNum));
+		$.ajax({
+			type: "get",
+			url: `${URL}${TRANSACTIONS_BYACCNUM}`,
+			data: { 'accountNum': acc_num },
+			success: function (data) {
+
+				const table = $('#acctxns-config').DataTable({
+					"createdRow": function (row, data, index) { //index = row
+						$('td', row).eq(0).attr('id', 'acctxns-' + index + '-hash');
+						$('td', row).eq(1).attr('id', 'acctxns-' + index + '-blkNo');
+						$('td', row).eq(2).attr('id', 'acctxns-' + index + '-from');
+						$('td', row).eq(3).attr('id', 'acctxns-' + index + '-to');
+						$('td', row).eq(0).attr('val', data.hash);
+						$('td', row).eq(1).attr('val', data.blk);
+						$('td', row).eq(2).attr('val', data.fromAccHexa);
+						$('td', row).eq(3).attr('val', data.toAccHexa);
+					},
+					"data": data.result,
+					"columnDefs": [
+						{ targets: [0], className: 'alignLeft cursorPointer' },
+						{ targets: [1, 2, 3], className: 'alignLeft cursorPointer' },
+						{ targets: [5], className: 'alignLeft' },
+						{ targets: [4, 7], className: 'alignLeft' },
+						{ targets: [8, 9, 10], visible: false },
+						{
+							'bSortable': false,
+							'aTargets': [0, 2, 3]
+						},
+						{
+							"render": function (data, type, row) {
+								return "#" + data
+							},
+							"targets": 1
+						},
+					],
+					//		"processing": true,   
+					//		"serverSide": true, 	
+					"columns": [
+						{ "data": "shortenHash" },
+						{ "data": "blk" },
+						{ "data": "fromAccHexa" },
+						{ "data": "toAccHexa" },
+						{ "data": "type" },
+						{ "data": "amount" },
+						{ "data": "token" },
+						{ "data": "status" },
+						{ "data": "fromAccDecimal" },
+						{ "data": "toAccDecimal" },
+						{ "data": "hash" },
+					],
+					"searching": false,
+					"ordering": false,
+					"paging": true,
+					"info": true,
+					"stripeClasses": [],
+					"lengthChange": false,
+					//"lengthMenu": [10, 20, 30, 40, 50],
+					//"displayLength": 20,
+					"pageLength": 20,
+					"order": [[0, 'desc']]
+				});
+
+				$('#acctxns-config tbody').on('click', 'tr', function () {
+
+					const target = $(event.target);
+					$td = target.closest('td');
+					const headerName = $td.closest('table').find('th').eq($td.index())[0].innerText
+
+					const data = table.row(this).data();
+
+					if (headerName == 'Txn Hash') {
+						window.location.href = URL + "/trans-hash-details/" + data.hash;
+					}
+					else if (headerName == 'From') {
+						window.location.href = URL + "/account-details/" + data.fromAccDecimal;
+					}
+					else if (headerName == 'To') {
+						window.location.href = URL + "/account-details/" + data.toAccDecimal;
+					}
+					else if (headerName == 'Block No') {
+						window.location.href = URL + "/block-details/" + data.blk;
+					}
+
+				});
+
+				//	$('#transDetail').html(resetTableData(d.data.contents.accountLatestScTxs, ttime));
+
+				for (let i = 0; i < table.data().rows().count(); i++) {
+					// block default context menu
+					document.getElementById("acctxns-" + i + "-hash").addEventListener("contextmenu", function (e) { e.preventDefault(); });
+					document.getElementById("acctxns-" + i + "-blkNo").addEventListener("contextmenu", function (e) { e.preventDefault(); });
+					document.getElementById("acctxns-" + i + "-from").addEventListener("contextmenu", function (e) { e.preventDefault(); });
+					document.getElementById("acctxns-" + i + "-to").addEventListener("contextmenu", function (e) { e.preventDefault(); });
+
+					//display custom context menu
+					$("#acctxns-" + i + "-hash").mousedown(function (ev) {
+						//1. mouse left click 
+						//2. mouse middle click  
+						//3. mouse right click 
+						if (ev.which == 3) {
+							createContextMenu("#acctxns-" + i + "-hash");
+						}
+					});
+
+					$("#acctxns-" + i + "-blkNo").mousedown(function (ev) {
+						if (ev.which == 3) {
+							createContextMenu("#acctxns-" + i + "-blkNo");
+						}
+					});
+
+					$("#acctxns-" + i + "-from").mousedown(function (ev) {
+						if (ev.which == 3) {
+							createContextMenu("#acctxns-" + i + "-from");
+						}
+					});
+
+					$("#acctxns-" + i + "-to").mousedown(function (ev) {
+						if (ev.which == 3) {
+							createContextMenu("#acctxns-" + i + "-to");
+						}
+					});
+				}
+
+			},
+			error: function (request, status, error) {
+				//	console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+			},
+		});
+	};
+
+	function getNftByAccNum(acc_num) {
+		
+		const table = $('#accnft-config').DataTable({
+
+			ajax: {
+				url: `${URL}${NFT_BYACCNUM}`,
+				dataSrc: 'result',
+				data: { 'accountNum': acc_num },
+				// success: function (data) {
+				// 		console.log("getNftList:" + JSON.stringify(data.result) + "\n");
+				// },
+				error: function (request, status, error) {
+					console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				},
+			},
+
+			"columnDefs": [
+				{ targets: [0, 2, 3, 4, 6], className: 'dt-left cursorPointer' },
+				{ targets: [7], className: 'dt-right cursorPointer' },
+				{ targets: [9, 10, 11], visible: false },
+				{
+					"render": function (data, type, row) {
+						return "#" + data
+					},
+					"targets": 0
+				},
+				{
+					"render": function (data, type, row, meta) {
+						if(!isNaN(data))
+						{						
+						 	if(data == null)
+							return '<span style="margin-left:5px"></span>';
+							else
+							return '<span style="margin-left:5px">' + data + '%</span>';
+						}else
+						{
+							return '<span style="margin-left:5px">' + 0 + '%</span>';
+						}
+					},
+					"targets": 7
+				},	
+			],
+			"columns": [
+				{ "data": "blk" },
+				{ "data": "createTm" },
+				{ "data": "nftName" },
+				{ "data": "tokenName" },
+				{ "data": "tokenSymbol" },
+				{ "data": "type" },
+				{ "data": "shortenHash" },
+				{ "data": "pRatio" },
+				{ "data": "tokenIdHexa" },
+				{ "data": "hash" },
+				{ "data": "scAction" },
+				{ "data": "tokenIdDecimal" },
+			],
+			"processing": false,
+			"serverSide": false,
+			"searching": false,		
+			"ordering": false,
+			"retrieve": false,
+			"paging": true,
+			"info": true,
+			"stripeClasses": [],
+			"lengthChange": false,
+			"lengthMenu": [10, 20, 30, 40, 50],
+			"displayLength": 20,
+			"pageLength": 20,
+			"order": [[0, 'desc']]
+		});
+
+		// 	move to NFT Detail page
+		$('#accnft-config tbody').on('click', 'tr', function () {
+
+			const target = $(event.target);
+			$td = target.closest('td');
+			const headerName = $td.closest('table').find('th').eq($td.index())[0].innerText
+
+			const data = table.row(this).data();
+
+			if (headerName == 'Block No') {
+				window.location.href = URL + "/block-details/" + data.blk;
+
+			}else if (headerName == 'NFT Name') {
+				window.location.href = URL + "/nft-details/" + data.scAction;
+			}
+			else if (headerName == 'Name' || headerName == 'Symbol' ) {
+				window.location.href = URL + "/token-details/" + data.tokenSymbol;
+			}
+			else if (headerName == 'Hash') {
+				window.location.href = URL + "/trans-hash-details/" + data.hash;
+			}
+			else if (headerName == 'Token ID') { // fromAccount 를 같이 보내서 조회
+			// 테이블 안보이게 하고 그 위에 tx_count 를 뺀다.
+				window.location.href = URL + "/nft-sub-details/" + dataObj.accountNum  + "/" + data.scAction + "/" + data.tokenIdDecimal;
+			}
+		});
+	}
+</script>

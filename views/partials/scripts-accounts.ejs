@@ -1,0 +1,356 @@
+<script>
+	$(document).ready(function () {
+	
+		//Total Accounts
+		getTotAcc();
+
+		// setInterval(() => {
+		// 	getTotAcc();
+		// }, 1000 * 4);
+
+		getUserlist();
+		getTokenlist();
+	});
+
+	/**
+	 * fetching brief data for accounts 
+	 * @event getTotAcc
+	 * @param 
+	 */
+	function getTotAcc() {
+		$.ajax({
+			type: "get",
+			url: `${URL}${HOME}`,
+			success: function (data) {
+				//console.log("getTotAcc:" + JSON.stringify(data.result) + "\n");
+
+				// display response data from API
+				dataTextView(data.result);
+
+			},
+			error: function (request, status, error) {
+				//console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+			},
+		});
+	};
+
+	/**
+	 * loading upper page data
+	 * @event dataTextView
+	 * @param 
+	 */
+	function dataTextView(data) {
+		//console.log(data);
+
+		//Total AccData
+		$('#totAccount').text(data.userAccounts);
+		$('#totToken').text(data.tokenAccounts);
+		$('#totAccount24h').text(data.userAccounts24h);
+		$('#totToken24h').text(data.tokenAccounts24h);
+
+		//executeAni(data);
+	};
+
+	/**
+	 * rendering datatable for Userlist data
+	 * @event getUserlist
+	 * @param
+	 */
+	function getUserlist() {
+
+		const table = $('#user-config').DataTable({			
+			ajax: {
+				url: `${URL}${USER_LIST}`,
+				dataSrc: 'data',
+				// success: function (d) {
+				// 	//console.log("getUserlist:" + JSON.stringify(d.data) + "\n");
+				// 	//$('#userList').html(resetUserTableData(d.data.contents.uAccountInfoList));		
+				// },
+				error: function (request, status, error) {
+					console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				},
+			},
+			"createdRow": function (row, data, index) { //index = row
+				$('td', row).eq(2).attr('id', 'accountUser-' + index + '-accNo');
+				$('td', row).eq(3).attr('id', 'accountUser-' + index + '-blkNo');
+				$('td', row).eq(2).attr('val', data.accountNumHexa);
+				$('td', row).eq(3).attr('val', data.blkNum);
+				$('td', row).eq(5).attr('title', data.bpNo);
+			},
+			//"data": d.data,
+			"columnDefs": [
+				{ targets: [4], className: 'alignLeft cursorPointer' },
+				{ targets: [1, 2, 3], className: 'alignLeft cursorPointer' },
+				{ targets: [0, 1, 3, 4, 5], className: 'alignLeft' },
+				{ targets: [6], visible: false },
+				{
+					'bSortable': false,
+					'aTargets': [2, 4]
+				},
+				{
+					"render": function (data, type, row) {
+						return "#" + data
+					},
+					"targets": 3
+				}				
+			],
+			"columns": [
+				{ "data": "no" },
+				{ "data": "accountId" },
+				{ "data": "accountNumHexa" },
+				{ "data": "blkNum" },
+				{ "data": "ownerPubkey" },
+				{ "data": "bps" },
+				{ "data": "accountNumDecimal" }
+			],
+			//		"processing": true,   
+			//		"serverSide": true, 	
+			"searching": false,
+			"ordering": false,
+			"paging": true,
+			"info": true,
+			"stripeClasses": [],
+			"lengthChange": false,
+			//"lengthMenu": [10, 20, 30, 40, 50],
+			//"displayLength": 20,
+			"pageLength": 20,
+			"order": [[0, 'desc']]
+		});
+
+		setInterval(function () {
+			//console.log("===============userList=reload===============")
+			table.ajax.reload();
+		}, 30000);
+
+		//move to Detail page
+		$('#user-config tbody').on('click', 'tr', function () {
+			const target = $(event.target);
+			$td = target.closest('td');
+			const headerName = $td.closest('table').find('th').eq($td.index())[0].innerText
+
+			const data = table.row(this).data();
+
+			if (headerName == 'Account ID' ||
+				headerName == 'Account No' ||
+				headerName == 'Owner PubKey'
+			) {
+
+				window.location.href = URL + "/account-details/" + data.accountNumDecimal;
+
+			}
+			else if (headerName == 'Block No') {
+
+				window.location.href = URL + "/block-details/" + data.blkNum;
+
+			}
+
+		});
+
+		//after rendering datatable, bind unique id on each row
+		$('#user-config').on('draw.dt', function () {
+			let info = table.page.info();
+			let rows = table.rows({ page: 'current' }).data();
+			accIdBinding(table.page.info().page, rows);
+		});
+
+		//after clicking pagination, bind unique id on each row
+		$('#user-config').on('page.dt', function () {
+			let info = table.page.info();
+			//console.log('Showing page: ' + info.page + ' of ' + info.pages);
+
+			$('#user-config').on('draw.dt', function () {
+				let info = table.page.info();
+				let rowNo = []
+				let rowStartNo = info.page * 20;
+				let rowEndNo = info.page * 20 + 20;
+				for (let i = rowStartNo; i < rowEndNo; i++) {
+					rowNo.push(i);
+				}
+				//console.log("rowNoArr:" + JSON.stringify(rowNo))
+				let rows = table.rows(rowNo).data();
+
+				accIdBinding(table.page.info().page, rows);
+			});
+		});
+
+		 /**
+		 * creating context menu(mouse right click) on each page of userlist datatable
+		 * @event accIdBinding
+		 * @param {String} msg A description of...
+		 */ 
+		function accIdBinding(pageNo, rows) {
+
+			for (let i = 0; i < rows.count(); i++) {
+				//console.log('id: ' + (i + parseInt(pageNo * 20)));
+				let id = i + parseInt(pageNo * 20);
+				document.getElementById("accountUser-" + id + "-accNo").addEventListener("contextmenu", function (e) { e.preventDefault(); });
+				document.getElementById("accountUser-" + id + "-blkNo").addEventListener("contextmenu", function (e) { e.preventDefault(); });
+				//display custom context menu
+				$("#accountUser-" + id + "-accNo").mousedown(function (ev) {
+					if (ev.which == 3) {
+
+						createContextMenu("#accountUser-" + id + "-accNo");
+					}
+				});
+
+				$("#accountUser-" + id + "-blkNo").mousedown(function (ev) {
+					if (ev.which == 3) {
+
+						createContextMenu("#accountUser-" + id + "-blkNo");
+					}
+				});
+			}
+		}
+	};
+
+	/**
+	 * rendering datatable for Tokenlist data
+	 * @event getTokenlist
+	 * @param
+	 */
+	function getTokenlist() {
+
+		const table = $('#token-config').DataTable({		
+			ajax: {
+				url: `${URL}${TOKEN_LIST}`,
+				dataSrc: 'data',
+				// success: function (d) {
+				// 	console.log("getTokenlist:" + JSON.stringify(d.data) + "\n");
+				// 	$('#tokenlist').html(resetTokenTableData(d.data.contents.tAccountInfoList));
+				// },
+				error: function (request, status, error) {
+					console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				},
+			},
+			"createdRow": function (row, data, index) { //index = row
+				$('td', row).eq(3).attr('id', 'tokenUser-' + index + '-accNo');			
+				$('td', row).eq(3).attr('val', data.accountNumHexa);
+				$('td', row).eq(5).attr('title', data.bpNo);
+			},
+			//"data": d.data,
+			"columnDefs": [
+				{ targets: [0, 1, 2], className: 'alignLeft cursorPointer' },
+				{ targets: [4, 5], className: 'alignLeft' },
+				{ targets: [6], visible: false }				
+			],
+			"columns": [
+				{ "data": "name" },
+				{ "data": "symbol" },
+				{ "data": "action" },
+				{ "data": "accountNumHexa" },
+				{ "data": "totalSupply" },
+				{ "data": "bps" },
+				{ "data": "accountNumDecimal" }
+			],
+			//		"processing": true,   
+			//		"serverSide": true, 	
+			"searching": false,
+			"ordering": false,
+			"paging": true,
+			"info": true,
+			"stripeClasses": [],
+			"lengthChange": false,
+			//"lengthMenu": [10, 20, 30, 40, 50],
+			//"displayLength": 20,
+			"pageLength": 20,
+			"order": [[0, 'desc']]
+		});
+
+		setInterval(function () {
+			//console.log("===============tokenList=reload===============")
+			table.ajax.reload();
+		}, 30000);
+
+		//move to Token Detail page
+		$('#token-config tbody').on('click', 'tr', function () {
+			const target = $(event.target);
+			$td = target.closest('td');
+			const headerName = $td.closest('table').find('th').eq($td.index())[0].innerText
+
+			const data = table.row(this).data();
+
+			if (headerName == 'Name' ||
+				headerName == 'Symbol' ||
+				headerName == 'Action') {
+
+				window.location.href = URL + "/token-details/" + data.action;
+			}
+		});
+
+		//after rendering datatable, bind unique id on each row
+		$('#token-config').on('draw.dt', function () {
+			let info = table.page.info();
+			let rows = table.rows({ page: 'current' }).data();
+			tokenIdBinding(table.page.info().page, rows);
+		});
+
+		//after clicking pagination, bind unique id on each row
+		$('#token-config').on('page.dt', function () {
+			let info = table.page.info();
+			//console.log('Showing page: ' + info.page + ' of ' + info.pages);
+
+			$('#token-config').on('draw.dt', function () {
+				let info = table.page.info();
+				let rowNo = []
+				let rowStartNo = info.page * 20;
+				let rowEndNo = info.page * 20 + 20;
+				for (let i = rowStartNo; i < rowEndNo; i++) {
+					rowNo.push(i);
+				}
+				//console.log("rowNoArr:" + JSON.stringify(rowNo))
+				let rows = table.rows(rowNo).data();
+
+				tokenIdBinding(table.page.info().page, rows);
+			});
+		});
+
+		 /**
+		 * creating context menu(mouse right click) on each page of tokenlist datatable
+		 * @event tokenIdBinding
+		 * @param {String} msg A description of...
+		 */ 
+		function tokenIdBinding(pageNo, rows) {
+
+			for (let i = 0; i < rows.count(); i++) {
+				// block default context menu
+				//console.log('id: ' + (i + parseInt(pageNo * 20)));
+				let id = i + parseInt(pageNo * 20);
+				document.getElementById("tokenUser-" + id + "-accNo").addEventListener("contextmenu", function (e) { e.preventDefault(); });
+				//display custom context menu
+				$("#tokenUser-" + id + "-accNo").mousedown(function (ev) {
+
+					if (ev.which == 3) {
+
+						createContextMenu("#tokenUser-" + id + "-accNo");
+					}
+				});			
+			}
+		}
+	};
+
+	/**
+	 * executing Animation
+	 * @event executeAni
+	 * @param 
+	 */
+	function executeAni(data) {
+
+		$('#totAccount').text(data.userAccounts);
+		$('#totToken').text(data.tokenAccounts);
+		$('#totAccount24h').text(data.userAccounts24h);
+		$('#totToken24h').text(data.tokenAccounts24h);
+
+		const obj1 = document.getElementById("totAccount");
+		const obj2 = document.getElementById("totToken");
+		const obj3 = document.getElementById("totAccount24h");
+		const obj4 = document.getElementById("totToken24h");
+
+		//console.log("totalBlk:" + JSON.stringify(obj1) + "\n");
+
+		animateValue(obj1, data.userAccounts * 0.98, data.userAccounts, 2000);
+		animateValue(obj2, data.tokenAccounts * 0.98, data.tokenAccounts, 2000);
+		animateValue(obj3, data.userAccounts24h * 0.98, data.userAccounts24h, 2000);
+		animateValue(obj4, data.tokenAccounts24h * 0.98, data.tokenAccounts24h, 2000);
+	}
+
+</script>

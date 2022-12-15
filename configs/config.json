@@ -1,0 +1,5 @@
+{
+    "webApi3000": "http://api.finlscan.org:3000",
+    "webApi4000": "http://api.finlscan.org:4001",
+    "webApi": "http://api.finlscan.org.org"
+}

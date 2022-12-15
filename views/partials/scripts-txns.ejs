@@ -1,0 +1,1413 @@
+<script>
+	const bpId = [];
+	let subnetID = [];
+	let bpLeng = 0;
+	$(document).ready(function () {
+
+		getBpList();		
+
+		//mobile resize
+		if (detectMob()) {
+			$('.txnsCell-container').css({ "margin": "5px 5px" });
+			$('.bpCell-container').css({ "margin": "5px 5px" });
+		}
+
+		getTxnsInfo();
+
+		setInterval(() => {
+			getTxnsInfo();
+		}, 1000 * 4);
+
+		//Transactions
+		getAllTransactions();
+	});
+	
+	/**
+     * getting Bp list data
+     * @event getBpList
+     * @param {String} msg A description of...
+     */
+	 function getBpList() {
+		$.ajax({
+			type: "get",
+			url: `${URL}${BP_LIST}`,
+			success: function (d) {
+
+				bpInfo = d.result.hubInfo;
+			//	console.log("bpInfo:" + JSON.stringify(bpInfo) + "\n");	
+				bpLeng = bpInfo.length;		
+				
+				for(let i = 0 ; i < bpLeng; i++ ){
+			//		console.log( "subnetID"+i+":"+ getSubnetId( bpInfo[(i)].hub_p2p_addr));		
+					subnetID.push(getSubnetId( bpInfo[i].hub_p2p_addr)); 
+			//		console.log( "subnetID[]: "+ JSON.stringify(subnetID));		
+
+					$('#bp'+(i+1)+'txns').text(bpInfo[i].name + " Txns");
+					$('#pills-bp'+(i+1)+'-tab').text(bpInfo[i].name);
+				}	
+
+				subnetID.forEach(function(item){
+			//		console.log("subnetID_: "+item);
+				})
+
+				getTransactionsByBp1(subnetID[0]); //
+				getTransactionsByBp2(subnetID[1]); //
+
+			},
+			error: function (request, status, error) {
+				//console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+			},
+		});
+	};
+
+	 /**
+	 * fetching brief data for transactions 
+	 * @event getTxnsInfo
+	 * @param 
+	 */
+	function getTxnsInfo() {
+		$.ajax({
+			type: "get",
+			url: `${URL}${BP_INFO}`,
+			success: function (d) {
+				//console.log("getTxnsInfo:" + JSON.stringify(d.result) + "\n");
+				//console.log("bpCnt:" + JSON.stringify(d.result.bpCnt) + "\n");
+
+				// display response data from API
+				dataTextView(d.result);
+
+				// if (d.result.res == true) {
+				// 	for (let i = 0; i < d.result.bpCnt; i++) {
+				// 		console.log("subnetId:" + JSON.stringify(d.result.bp_info[i].subnetId) + "\n");
+				// 		d.result.bp_info[i].subnetId.forEach(function(value){
+				// 			if(bpId.indexOf(value)==-1) bpId.push(value); 
+				// 		});
+				// 		//bpId.push( d.result.bp_info[i].subnetId);
+				// 		console.log("bpId:"+ JSON.stringify(bpId))
+				// 	//	getTransactionsByBp(bpId);
+				// 	}
+				// }
+
+			},
+			error: function (request, status, error) {
+				//console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+			},
+		});
+	};
+
+	/**
+	 * loading upper page data
+	 * @event dataTextView
+	 * @param 
+	 */
+	function dataTextView(data) {
+
+		const totalTxsCnt = new Intl.NumberFormat().format(data.totalTxsCnt)
+		const bpCnt = new Intl.NumberFormat().format(data.bpCnt)
+
+		let  bp1TxsCnt = 0
+		let  bp1Txs24hCnt = 0
+		let  bp2TxsCnt = 0
+		let  bp2Txs24hCnt = 0
+
+		if(data.bp_info[0])
+		{
+			bp1TxsCnt = new Intl.NumberFormat().format(data.bp_info[0].subnetTxsCnt)
+			bp1Txs24hCnt = new Intl.NumberFormat().format(data.bp_info[0].subnet24hCnt)
+		}else if(data.bp_info[1])
+		{
+			bp2TxsCnt = new Intl.NumberFormat().format(data.bp_info[1].subnetTxsCnt)
+			bp2Txs24hCnt = new Intl.NumberFormat().format(data.bp_info[1].subnet24hCnt)
+		}
+
+		//Total txsCnt
+		$('#totalTxsCnt').text(totalTxsCnt);
+		$('#bpCnt').text(bpCnt);
+
+		//BP1
+		$('#bp1TxsCnt').text(bp1TxsCnt);
+		$('#bp1Txs24hCnt').text(bp1Txs24hCnt);
+		//BP2
+		$('#bp2TxsCnt').text(bp2TxsCnt);
+		$('#bp2Txs24hCnt').text(bp2Txs24hCnt);
+
+		executeAni(data);
+	};
+
+	/**
+	 * rendering datatable for all transaction data
+	 * @event getAllTransactions
+	 * @param
+	 */
+	function getAllTransactions() {
+
+		//	console.log("getAllTransactions:" + JSON.stringify(data.result) + "\n");
+
+		const allTable = $('#all-config').DataTable({		
+			ajax: {
+				url: `${URL}${LATEST_TXNS}`,
+				dataSrc: 'result',
+				error: function (request, status, error) {
+					console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				},
+			},
+			"createdRow": function (row, data, index) { //index = row					
+				$('td', row).eq(0).attr('id', 'txnsBpAll-' + index + '-blkNo');
+				$('td', row).eq(2).attr('id', 'txnsBpAll-' + index + '-from');
+				$('td', row).eq(3).attr('id', 'txnsBpAll-' + index + '-to');
+				$('td', row).eq(6).attr('id', 'txnsBpAll-' + index + '-hash');
+				$('td', row).eq(0).attr('val', data.blk);
+				$('td', row).eq(2).attr('val', data.fromAccHexa);
+				$('td', row).eq(3).attr('val', data.toAccHexa);
+				$('td', row).eq(6).attr('val', data.hash);				
+			},
+			"columnDefs": [
+				{ targets: [0, 2, 3], className: 'alignLeft cursorPointer' },
+				{ targets: [6], className: 'alignLeft cursorPointer' },
+				{ targets: [7], className: 'alignLeft' },
+				{ targets: [4, 7], className: 'alignLeft' },
+				{ targets: [8, 9, 10, 11, 12], visible: false },
+				{
+					"render": function (data, type, row) {
+						return "#" + data
+					},
+					"targets": 0
+				},
+				{
+					"render": function (data, type, row) {
+						if (row.type == 'TRANSFER') {						
+							return data + ' ' + `<img style="width:16px; height:16px" src='${imgURL}:80/mainnetAction/${row.c_action}.svg' ></img>`
+						}
+						else {
+							return data
+						}
+					},
+					"targets": 5
+				}			
+			],	
+			"columns": [
+				{ "data": "blk" },
+				{ "data": "age" },
+				{ "data": "fromAccHexa" },
+				{ "data": "toAccHexa" },
+				{ "data": "type" },
+				{ "data": "amount" },
+				{ "data": "shortenHash" },
+				{ "data": "bp" },
+				{ "data": "fromAccDecimal" },
+				{ "data": "toAccDecimal" },
+				{ "data": "hash" },
+				{ "data": "c_action" },
+				{ "data": "time" }
+			],
+			"searching": false,
+			"ordering": false,
+			"paging": true,
+			"info": true,
+			"stripeClasses": [],
+			"lengthChange": false,
+			//"lengthMenu": [10, 20, 30, 40, 50],
+			//"displayLength": 20,
+			"pageLength": 20,
+			"order": [[0, 'desc']]
+		});
+
+		setInterval(function () {
+			console.log("===============allTable=reload===============")
+			allTable.ajax.reload();
+			$('#ageTimeAll').html('Age');
+		}, 4000);
+	
+		//when Age header clicked, change it to opposit side  (Age <-> Time)
+		const selectedElements = $("#all-config tr").find("th:eq(1)");
+		$(selectedElements).on('click', function () {
+				
+			let strAge = document.querySelector("#allTx > tr:nth-child(1) > td:nth-child(2)")
+			if (strAge.innerHTML.includes('ago')) {
+				$('#ageTimeAll').html('Time');
+				$('#all-config tr').each(function (i) {
+					if (i > 0)//i=0 -> table header, i=1 => first line of table body
+					{
+						let time = allTable.rows({ page: 'current' }).data()[i - 1].time;
+						let bgt = getPullTime(Number(time)) || '';
+						//	console.log("bgt:" + bgt + "\n");						
+						$("td:eq(1)", this).text(bgt);
+					}
+				});
+			} else {
+				$('#ageTimeAll').html('Age');
+				$('#all-config tr').each(function (i) {
+					if (i > 0)
+					{
+						let age = allTable.rows({ page: 'current' }).data()[i - 1].age;
+						let bgt = age.replace(/&nbsp;/g, '');
+						//	console.log("bgt:" + bgt + "\n");							
+						$("td:eq(1)", this).html(bgt);
+					}
+				});
+			}
+		});
+
+		//move to Detail page
+		$('#all-config tbody').on('click', 'tr', function (event) {
+
+			const target = $(event.target);
+			$td = target.closest('td');
+			const headerName = $td.closest('table').find('th').eq($td.index())[0].innerText
+
+			const data = allTable.row(this).data();
+
+			if (headerName == 'Block No') {
+				window.location.href = URL + "/block-details/" + data.blk;
+			}
+			else if (headerName == 'From') {
+				if(data.fromAccDecimal != 0000000000000000)
+				window.location.href = URL + "/account-details/" + data.fromAccDecimal;
+			}
+			else if (headerName == 'To') {
+				if(data.toAccDecimal != 0000000000000000)
+				window.location.href = URL + "/account-details/" + data.toAccDecimal;
+			}
+			else if (headerName == 'Hash') {
+				window.location.href = URL + "/trans-hash-details/" + data.hash;
+			}
+
+		});
+
+		//after rendering datatable, bind unique id on each row
+		$('#all-config').on('draw.dt', function () {
+			let info = allTable.page.info();
+			let rows = allTable.rows({ page: 'current' }).data();
+			tranIdBinding('All', allTable.page.info().page, rows);
+		});
+
+		//after clicking pagination, bind unique id on each row
+		$('#all-config').on('page.dt', function () {
+			let info = allTable.page.info();
+			//console.log('Showing page: ' + info.page + ' of ' + info.pages);
+
+			$('#all-config').on('draw.dt', function () {
+				let info = allTable.page.info();
+				let rowNo = []
+				let rowStartNo = info.page * 20;
+				let rowEndNo = info.page * 20 + 20;
+				for (let i = rowStartNo; i < rowEndNo; i++) {
+					rowNo.push(i);
+				}
+				//console.log("rowNoArr:" + JSON.stringify(rowNo))
+				let rows = allTable.rows(rowNo).data();
+
+				tranIdBinding('All', allTable.page.info().page, rows);
+			});
+		});
+	};
+
+	/**
+	 * rendering datatable for bp1 transaction data
+	 * @event getTransactionsByBp1
+	 * @param
+	 */
+	function getTransactionsByBp1(subnetId) {
+		let bp1Table = '';
+
+		bp1Table = $('#bp1-config').DataTable({					
+			ajax: {
+				type: 'get',
+				url: `${URL}${TRANSACTIONS_BYBP}`,
+				data: { 'subnetId': subnetId },
+				dataSrc: 'result',
+				// success: function (data) {
+				// 	console.log("getTransactionsByBp1:" + JSON.stringify(data.result) + "\n");
+				// },
+				error: function (request, status, error) {
+					console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				},
+			},
+			"createdRow": function (row, data, index) { //index = row						
+				$('td', row).eq(0).attr('id', 'txnsBp1-' + index + '-blkNo');
+				$('td', row).eq(2).attr('id', 'txnsBp1-' + index + '-from');
+				$('td', row).eq(3).attr('id', 'txnsBp1-' + index + '-to');
+				$('td', row).eq(6).attr('id', 'txnsBp1-' + index + '-hash');
+				$('td', row).eq(0).attr('val', data.blk);
+				$('td', row).eq(2).attr('val', data.fromAccHexa);
+				$('td', row).eq(3).attr('val', data.toAccHexa);
+				$('td', row).eq(6).attr('val', data.hash);				
+			},
+			"columnDefs": [
+			    { targets: [0, 2, 3], className: 'alignLeft cursorPointer' },
+				{ targets: [6], className: 'alignLeft cursorPointer' },
+				{ targets: [7], className: 'alignLeft' },
+				{ targets: [4, 7], className: 'alignLeft' },
+				{ targets: [8, 9, 10, 11, 12], visible: false },
+				{
+					"render": function (data, type, row) {
+						return "#" + data
+					},
+					"targets": 0
+				},
+				{
+					"render": function (data, type, row) {
+						if (row.type == 'TRANSFER') {							
+							return data + ' ' + `<img style="width:16px; height:16px" src='${imgURL}:80/mainnetAction/${row.c_action}.svg' ></img>`
+						}
+						else {
+							return data
+						}
+					},
+					"targets": 5
+				},				
+			],
+			"columns": [
+				{ "data": "blk" },
+				{ "data": "age" },
+				{ "data": "fromAccHexa" },
+				{ "data": "toAccHexa" },
+				{ "data": "type" },
+				{ "data": "amount" },
+				{ "data": "shortenHash" },
+				{ "data": "bp" },
+				{ "data": "fromAccDecimal" },
+				{ "data": "toAccDecimal" },
+				{ "data": "hash" },
+				{ "data": "c_action" },
+				{ "data": "time" }
+			],
+			"searching": false,
+			"ordering": false,
+			"paging": true,
+			"info": true,
+			"stripeClasses": [],
+			"lengthChange": false,
+			//"lengthMenu": [10, 20, 30, 40, 50],
+			//"displayLength": 20,
+			"pageLength": 20,
+			"order": [[0, 'desc']]
+		});
+
+		setInterval(function () {
+			//console.log("===============bp1Table=reload===============")
+			bp1Table.ajax.reload();
+			$('#ageTimeBp1').html('Age');
+		}, 4000);
+		
+		//when Age header clicked, change it to opposit side  (Age <-> Time)
+		const selectedElements = $("#bp1-config tr").find("th:eq(1)");
+		$(selectedElements).on('click', function () {
+			let strAge = document.querySelector("#bp1Tx > tr:nth-child(1) > td:nth-child(2)")
+			if (strAge.innerHTML.includes('ago')) {
+				$('#ageTimeBp1').html('Time');
+				$('#bp1-config tr').each(function (i) {
+				
+					if (i > 0)//i=0 -> table header, i=1 => first line of table body
+					{
+						let time = bp1Table.rows({ page: 'current' }).data()[i - 1].time;
+						let bgt = getPullTime(Number(time)) || '';
+						//console.log("bgt:" + bgt + "\n");						
+						$("td:eq(1)", this).text(bgt);
+					}
+				});
+			} else {
+				$('#ageTimeBp1').html('Age');
+				$('#bp1-config tr').each(function (i) {
+					if (i > 0)
+					{
+						let age = bp1Table.rows({ page: 'current' }).data()[i - 1].age;
+						let bgt = age.replace(/&nbsp;/g, '');
+						//console.log("bgt:" + bgt + "\n");							
+						$("td:eq(1)", this).html(bgt);
+					}
+				});
+			}
+		});
+
+		//move to Block Detail page
+		$('#bp1-config tbody').on('click', 'tr', function () {
+
+			const target = $(event.target);
+			$td = target.closest('td');
+			const headerName = $td.closest('table').find('th').eq($td.index())[0].innerText
+
+			const data = bp1Table.row(this).data();
+
+			if (headerName == 'Block No') {
+				window.location.href = URL + "/block-details/" + data.blkNum;
+			}
+			else if (headerName == 'From') {
+				if(data.fromAccDecimal != 0000000000000000)
+				window.location.href = URL + "/account-details/" + data.fromAccDecimal;
+			}
+			else if (headerName == 'To') {
+				if(data.toAccDecimal != 0000000000000000)
+				window.location.href = URL + "/account-details/" + data.toAccDecimal;
+			}
+			else if (headerName == 'Hash') {
+				window.location.href = URL + "/trans-hash-details/" + data.hash;
+			}
+		});
+
+		//after rendering datatable, bind unique id on each row
+		$('#bp1-config').on('draw.dt', function () {
+			let info = bp1Table.page.info();
+			let rows = bp1Table.rows({ page: 'current' }).data();
+			tranIdBinding('1', bp1Table.page.info().page, rows);
+		});
+
+		//after clicking pagination, bind unique id on each row
+		$('#bp1-config').on('page.dt', function () {
+			let info = bp1Table.page.info();
+			//console.log('Showing page: ' + info.page + ' of ' + info.pages);
+
+			$('#bp1-config').on('draw.dt', function () {
+				let info = bp1Table.page.info();
+				let rowNo = []
+				let rowStartNo = info.page * 20;
+				let rowEndNo = info.page * 20 + 20;
+				for (let i = rowStartNo; i < rowEndNo; i++) {
+					rowNo.push(i);
+				}
+				//console.log("rowNoArr:" + JSON.stringify(rowNo))
+				let rows = bp1Table.rows(rowNo).data();
+
+				tranIdBinding('1', bp1Table.page.info().page, rows);
+			});
+		});
+	};
+
+	/**
+	 * rendering datatable for bp2 transaction data
+	 * @event getTransactionsByBp1
+	 * @param
+	 */
+	function getTransactionsByBp2(subnetId) {
+		let bp2Table = '';
+
+		bp2Table = $('#bp2-config').DataTable({
+			//30초마다 릴로드할 때 불러오는 데이타
+			ajax: {
+				type: 'get',
+				url: `${URL}${TRANSACTIONS_BYBP}`,
+				data: { 'subnetId': subnetId },
+				dataSrc: 'result',
+				// success: function (data) {
+				// 	console.log("getTransactionsByBp2:" + JSON.stringify(data.result) + "\n");
+				// },
+				error: function (request, status, error) {
+					console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				},
+			},
+			"createdRow": function (row, data, index) { //index = row
+				$('td', row).eq(0).attr('id', 'txnsBp2-' + index + '-blkNo');
+				$('td', row).eq(2).attr('id', 'txnsBp2-' + index + '-from');
+				$('td', row).eq(3).attr('id', 'txnsBp2-' + index + '-to');
+				$('td', row).eq(6).attr('id', 'txnsBp2-' + index + '-hash');
+				$('td', row).eq(0).attr('val', data.blk);
+				$('td', row).eq(2).attr('val', data.fromAccHexa);
+				$('td', row).eq(3).attr('val', data.toAccHexa);
+				$('td', row).eq(6).attr('val', data.hash);
+			},
+			"columnDefs": [
+			    { targets: [0, 2, 3], className: 'alignLeft cursorPointer' },
+				{ targets: [6], className: 'alignLeft cursorPointer' },
+				{ targets: [7], className: 'alignLeft' },
+				{ targets: [4, 7], className: 'alignLeft' },
+				{ targets: [8, 9, 10, 11, 12], visible: false },
+				{
+					"render": function (data, type, row) {
+						if (row.type == 'TRANSFER') {							
+							return data + ' ' + `<img style="width:16px; height:16px" src='${imgURL}:80/mainnetAction/${row.c_action}.svg' ></img>`
+						}
+						else {
+							return data
+						}
+					},
+					"targets": 5
+				}				
+			],
+			//		"processing": true,   
+			//		"serverSide": true, 	
+			"columns": [
+				{ "data": "blk" },
+				{ "data": "age" },
+				{ "data": "fromAccHexa" },
+				{ "data": "toAccHexa" },
+				{ "data": "type" },
+				{ "data": "amount" },
+				{ "data": "shortenHash" },
+				{ "data": "bp" },
+				{ "data": "fromAccDecimal" },
+				{ "data": "toAccDecimal" },
+				{ "data": "hash" },
+				{ "data": "c_action" },
+				{ "data": "time" }
+			],
+			"searching": false,
+			"ordering": false,
+			"paging": true,
+			"info": true,
+			"stripeClasses": [],
+			"lengthChange": false,
+			//"lengthMenu": [10, 20, 30, 40, 50],
+			//"displayLength": 20,
+			"pageLength": 20,
+			"order": [[0, 'desc']]
+		});
+
+		setInterval(function () {
+			bp2Table.ajax.reload();
+			$('#ageTimeBp2').html('Age');
+		}, 4000);
+		
+		//when Age header clicked, change it to opposit side  (Age <-> Time)
+		const selectedElementsBp2 = $("#bp2-config tr").find("th:eq(1)");
+		$(selectedElementsBp2).on('click', function () {					
+			let strAge = document.querySelector("#bp2Tx > tr:nth-child(1) > td:nth-child(2)")
+			if (strAge.innerHTML.includes('ago')) {
+				$('#ageTimeBp2').html('Time');
+				$('#bp2-config tr').each(function (i) {
+					if (i > 0)//i=0 -> table header, i=1 => first line of table body
+					{
+						let time = bp2Table.rows({ page: 'current' }).data()[i - 1].time;
+						let bgt = getPullTime(Number(time)) || '';
+						//console.log("bgt:" + bgt + "\n");						
+						$("td:eq(1)", this).text(bgt);
+					}
+				});
+			} else {
+				$('#ageTimeBp2').html('Age');
+				$('#bp2-config tr').each(function (i) {
+					if (i > 0)
+					{
+						let age = bp2Table.rows({ page: 'current' }).data()[i - 1].age;
+						let bgt = age.replace(/&nbsp;/g, '');
+						//console.log("bgt:" + bgt + "\n");							
+						$("td:eq(1)", this).html(bgt);
+					}
+				});
+			}
+		});
+
+		//after rendering datatable, bind unique id on each row
+		$('#bp2-config').on('draw.dt', function () {
+			let info = bp2Table.page.info();
+			let rows = bp2Table.rows({ page: 'current' }).data();
+			tranIdBinding('2', bp2Table.page.info().page, rows);
+		});
+
+		//after clicking pagination, bind unique id on each row
+		$('#bp2-config').on('page.dt', function () {
+			let info = bp2Table.page.info();
+			//console.log('Showing page: ' + info.page + ' of ' + info.pages);
+
+			$('#bp2-config').on('draw.dt', function () {
+				let info = bp2Table.page.info();
+				let rowNo = []
+				let rowStartNo = info.page * 20;
+				let rowEndNo = info.page * 20 + 20;
+				for (let i = rowStartNo; i < rowEndNo; i++) {
+					rowNo.push(i);
+				}
+				//console.log("rowNoArr:" + JSON.stringify(rowNo))
+				let rows = bp2Table.rows(rowNo).data();
+
+				tranIdBinding('2', bp2Table.page.info().page, rows);
+			});
+		});
+	};
+
+	 
+	function getTransactionsByBp3(subnetId) {
+		let bp3Table = '';
+
+		bp3Table = $('#bp3-config').DataTable({
+			//30초마다 릴로드할 때 불러오는 데이타
+			ajax: {
+				type: 'get',
+				url: `${URL}${TRANSACTIONS_BYBP}`,
+				data: { 'subnetId': subnetId },
+				dataSrc: 'result',
+				// success: function (data) {
+				// 	console.log("getTransactionsByBp2:" + JSON.stringify(data.result) + "\n");
+				// },
+				error: function (request, status, error) {
+					console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				},
+			},
+			"createdRow": function (row, data, index) { //index = row					
+				$('td', row).eq(0).attr('id', 'txnsBp3-' + index + '-blkNo');
+				$('td', row).eq(2).attr('id', 'txnsBp3-' + index + '-from');
+				$('td', row).eq(3).attr('id', 'txnsBp3-' + index + '-to');
+				$('td', row).eq(6).attr('id', 'txnsBp3-' + index + '-hash');
+				$('td', row).eq(0).attr('val', data.blk);
+				$('td', row).eq(2).attr('val', data.fromAccHexa);
+				$('td', row).eq(3).attr('val', data.toAccHexa);
+				$('td', row).eq(6).attr('val', data.hash);				
+			},
+			"columnDefs": [
+				{ targets: [0, 2, 3, 6], className: 'alignLeft cursorPointer' },		
+				{ targets: [4, 7], className: 'alignLeft' },
+				{ targets: [8, 9, 10, 11, 12], visible: false },
+				{
+					"render": function (data, type, row) {
+						if (row.type == 'TRANSFER') {							
+							return data + ' ' + `<img style="width:16px; height:16px" src='${imgURL}:80/action_images_testnet/${row.c_action}.svg' ></img>`
+						}
+						else {
+							return data
+						}
+					},
+					"targets": 5
+				}				
+			],
+		
+			"columns": [
+				{ "data": "blk" },
+				{ "data": "age" },
+				{ "data": "fromAccHexa" },
+				{ "data": "toAccHexa" },
+				{ "data": "type" },
+				{ "data": "amount" },
+				{ "data": "shortenHash" },
+				{ "data": "bp" },
+				{ "data": "fromAccDecimal" },
+				{ "data": "toAccDecimal" },
+				{ "data": "hash" },
+				{ "data": "c_action" },
+				{ "data": "time" }
+			],
+			"searching": false,
+			"ordering": false,
+			"paging": true,
+			"info": true,
+			"stripeClasses": [],
+			"lengthChange": false,
+			//"lengthMenu": [10, 20, 30, 40, 50],
+			//"displayLength": 20,
+			"pageLength": 20,
+			"order": [[0, 'desc']]
+		});
+
+		setInterval(function () {
+			bp3Table.ajax.reload();
+			$('#ageTimeBp3').html('Age');
+		}, 4000);
+
+		//when Age header clicked, change it to opposit side  (Age <-> Time)
+		const selectedElementsBp3 = $("#bp3-config tr").find("th:eq(1)");
+		$(selectedElementsBp3).on('click', function () {					
+			let strAge = document.querySelector("#bp3Tx > tr:nth-child(1) > td:nth-child(2)")
+			if (strAge.innerHTML.includes('ago')) {
+				$('#ageTimeBp3').html('Time');
+				$('#bp3-config tr').each(function (i) {
+					if (i > 0)//i=0 -> table header, i=1 => first line of table body
+					{
+						let time = bp3Table.rows({ page: 'current' }).data()[i - 1].time;
+						let bgt = getPullTime(Number(time)) || '';
+						//console.log("bgt:" + bgt + "\n");						
+						$("td:eq(1)", this).text(bgt);
+					}
+				});
+			} else {
+				$('#ageTimeBp3').html('Age');
+				$('#bp3-config tr').each(function (i) {
+					if (i > 0)
+					{
+						let age = bp2Table.rows({ page: 'current' }).data()[i - 1].age;
+						let bgt = age.replace(/&nbsp;/g, '');
+						//console.log("bgt:" + bgt + "\n");							
+						$("td:eq(1)", this).html(bgt);
+					}
+				});
+			}
+		});
+
+		//after rendering datatable, bind unique id on each row
+		$('#bp3-config').on('draw.dt', function () {
+			let info = bp3Table.page.info();
+			let rows = bp3Table.rows({ page: 'current' }).data();
+			tranIdBinding('3', bp3Table.page.info().page, rows);
+		});
+
+		//after clicking pagination, bind unique id on each row
+		$('#bp3-config').on('page.dt', function () {
+			let info = bp3Table.page.info();
+			console.log('Showing page: ' + info.page + ' of ' + info.pages);
+
+			$('#bp3-config').on('draw.dt', function () {
+				let info = bp3Table.page.info();
+				let rowNo = []
+				let rowStartNo = info.page * 20;
+				let rowEndNo = info.page * 20 + 20;
+				for (let i = rowStartNo; i < rowEndNo; i++) {
+					rowNo.push(i);
+				}
+				//console.log("rowNoArr:" + JSON.stringify(rowNo))
+				let rows = bp3Table.rows(rowNo).data();
+
+				tranIdBinding('3', bp3Table.page.info().page, rows);
+			});
+		});
+	};
+
+	function getTransactionsByBp4(subnetId) {
+		let bp4Table = '';
+
+		bp4Table = $('#bp4-config').DataTable({
+			//30초마다 릴로드할 때 불러오는 데이타
+			ajax: {
+				type: 'get',
+				url: `${URL}${TRANSACTIONS_BYBP}`,
+				data: { 'subnetId': subnetId },
+				dataSrc: 'result',
+				// success: function (data) {
+				// 	console.log("getTransactionsByBp2:" + JSON.stringify(data.result) + "\n");
+				// },
+				error: function (request, status, error) {
+					console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				},
+			},
+			"createdRow": function (row, data, index) { //index = row					
+				$('td', row).eq(0).attr('id', 'txnsBp4-' + index + '-blkNo');
+				$('td', row).eq(2).attr('id', 'txnsBp4-' + index + '-from');
+				$('td', row).eq(3).attr('id', 'txnsBp4-' + index + '-to');
+				$('td', row).eq(6).attr('id', 'txnsBp4-' + index + '-hash');
+				$('td', row).eq(0).attr('val', data.blk);
+				$('td', row).eq(2).attr('val', data.fromAccHexa);
+				$('td', row).eq(3).attr('val', data.toAccHexa);
+				$('td', row).eq(6).attr('val', data.hash);				
+			},
+			"columnDefs": [
+				{ targets: [0, 2, 3, 6], className: 'alignLeft cursorPointer' },		
+				{ targets: [4, 7], className: 'alignLeft' },
+				{ targets: [8, 9, 10, 11, 12], visible: false },
+				{
+					"render": function (data, type, row) {
+						if (row.type == 'TRANSFER') {							
+							return data + ' ' + `<img style="width:16px; height:16px" src='${imgURL}:80/action_images_testnet/${row.c_action}.svg' ></img>`
+						}
+						else {
+							return data
+						}
+					},
+					"targets": 5
+				}				
+			],
+		
+			"columns": [
+				{ "data": "blk" },
+				{ "data": "age" },
+				{ "data": "fromAccHexa" },
+				{ "data": "toAccHexa" },
+				{ "data": "type" },
+				{ "data": "amount" },
+				{ "data": "shortenHash" },
+				{ "data": "bp" },
+				{ "data": "fromAccDecimal" },
+				{ "data": "toAccDecimal" },
+				{ "data": "hash" },
+				{ "data": "c_action" },
+				{ "data": "time" }
+			],
+			"searching": false,
+			"ordering": false,
+			"paging": true,
+			"info": true,
+			"stripeClasses": [],
+			"lengthChange": false,
+			//"lengthMenu": [10, 20, 30, 40, 50],
+			//"displayLength": 20,
+			"pageLength": 20,
+			"order": [[0, 'desc']]
+		});
+
+		setInterval(function () {
+			bp4Table.ajax.reload();
+			$('#ageTimeBp4').html('Age');
+		}, 4000);
+		
+		//when Age header clicked, change it to opposit side  (Age <-> Time)
+		const selectedElementsBp4 = $("#bp4-config tr").find("th:eq(1)");
+		$(selectedElementsBp4).on('click', function () {					
+			let strAge = document.querySelector("#bp4Tx > tr:nth-child(1) > td:nth-child(2)")
+			if (strAge.innerHTML.includes('ago')) {
+				$('#ageTimeBp4').html('Time');
+				$('#bp4-config tr').each(function (i) {
+					if (i > 0)//i=0 -> table header, i=1 => first line of table body
+					{
+						let time = bp3Table.rows({ page: 'current' }).data()[i - 1].time;
+						let bgt = getPullTime(Number(time)) || '';
+						//console.log("bgt:" + bgt + "\n");						
+						$("td:eq(1)", this).text(bgt);
+					}
+				});
+			} else {
+				$('#ageTimeBp4').html('Age');
+				$('#bp4-config tr').each(function (i) {
+					if (i > 0)
+					{
+						let age = bp4Table.rows({ page: 'current' }).data()[i - 1].age;
+						let bgt = age.replace(/&nbsp;/g, '');
+						//console.log("bgt:" + bgt + "\n");							
+						$("td:eq(1)", this).html(bgt);
+					}
+				});
+			}
+		});
+
+		//after rendering datatable, bind unique id on each row
+		$('#bp4-config').on('draw.dt', function () {
+			let info = bp4Table.page.info();
+			let rows = bp4Table.rows({ page: 'current' }).data();
+			tranIdBinding('4', bp4Table.page.info().page, rows);
+		});
+
+		//after clicking pagination, bind unique id on each row
+		$('#bp4-config').on('page.dt', function () {
+			let info = bp4Table.page.info();
+			console.log('Showing page: ' + info.page + ' of ' + info.pages);
+
+			$('#bp4-config').on('draw.dt', function () {
+				let info = bp4Table.page.info();
+				let rowNo = []
+				let rowStartNo = info.page * 20;
+				let rowEndNo = info.page * 20 + 20;
+				for (let i = rowStartNo; i < rowEndNo; i++) {
+					rowNo.push(i);
+				}
+				//console.log("rowNoArr:" + JSON.stringify(rowNo))
+				let rows = bp4Table.rows(rowNo).data();
+
+				tranIdBinding('4', bp4Table.page.info().page, rows);
+			});
+		});
+	};
+
+	function getTransactionsByBp5(subnetId) {
+		let bp5Table = '';
+
+		bp5Table = $('#bp5-config').DataTable({
+			//30초마다 릴로드할 때 불러오는 데이타
+			ajax: {
+				type: 'get',
+				url: `${URL}${TRANSACTIONS_BYBP}`,
+				data: { 'subnetId': subnetId },
+				dataSrc: 'result',
+				// success: function (data) {
+				// 	console.log("getTransactionsByBp2:" + JSON.stringify(data.result) + "\n");
+				// },
+				error: function (request, status, error) {
+					console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				},
+			},
+			"createdRow": function (row, data, index) { //index = row					
+				$('td', row).eq(0).attr('id', 'txnsBp5-' + index + '-blkNo');
+				$('td', row).eq(2).attr('id', 'txnsBp5-' + index + '-from');
+				$('td', row).eq(3).attr('id', 'txnsBp5-' + index + '-to');
+				$('td', row).eq(6).attr('id', 'txnsBp5-' + index + '-hash');
+				$('td', row).eq(0).attr('val', data.blk);
+				$('td', row).eq(2).attr('val', data.fromAccHexa);
+				$('td', row).eq(3).attr('val', data.toAccHexa);
+				$('td', row).eq(6).attr('val', data.hash);				
+			},
+			"columnDefs": [
+				{ targets: [0, 2, 3, 6], className: 'alignLeft cursorPointer' },		
+				{ targets: [4, 7], className: 'alignLeft' },
+				{ targets: [8, 9, 10, 11, 12], visible: false },
+				{
+					"render": function (data, type, row) {
+						if (row.type == 'TRANSFER') {							
+							return data + ' ' + `<img style="width:16px; height:16px" src='${imgURL}:80/action_images_testnet/${row.c_action}.svg' ></img>`
+						}
+						else {
+							return data
+						}
+					},
+					"targets": 5
+				}				
+			],
+	
+			"columns": [
+				{ "data": "blk" },
+				{ "data": "age" },
+				{ "data": "fromAccHexa" },
+				{ "data": "toAccHexa" },
+				{ "data": "type" },
+				{ "data": "amount" },
+				{ "data": "shortenHash" },
+				{ "data": "bp" },
+				{ "data": "fromAccDecimal" },
+				{ "data": "toAccDecimal" },
+				{ "data": "hash" },
+				{ "data": "c_action" },
+				{ "data": "time" }
+			],
+			"searching": false,
+			"ordering": false,
+			"paging": true,
+			"info": true,
+			"stripeClasses": [],
+			"lengthChange": false,
+			//"lengthMenu": [10, 20, 30, 40, 50],
+			//"displayLength": 20,
+			"pageLength": 20,
+			"order": [[0, 'desc']]
+		});
+
+		setInterval(function () {
+			bp5Table.ajax.reload();
+			$('#ageTimeBp5').html('Age');
+		}, 4000);
+
+		//when Age header clicked, change it to opposit side  (Age <-> Time)
+		const selectedElementsBp5 = $("#bp5-config tr").find("th:eq(1)");
+		$(selectedElementsBp5).on('click', function () {					
+			let strAge = document.querySelector("#bp5Tx > tr:nth-child(1) > td:nth-child(2)")
+			if (strAge.innerHTML.includes('ago')) {
+				$('#ageTimeBp5').html('Time');
+				$('#bp5-config tr').each(function (i) {
+					if (i > 0)//i=0 -> table header, i=1 => first line of table body
+					{
+						let time = bp5Table.rows({ page: 'current' }).data()[i - 1].time;
+						let bgt = getPullTime(Number(time)) || '';
+						//console.log("bgt:" + bgt + "\n");						
+						$("td:eq(1)", this).text(bgt);
+					}
+				});
+			} else {
+				$('#ageTimeBp5').html('Age');
+				$('#bp5-config tr').each(function (i) {
+					if (i > 0)
+					{
+						let age = bp5Table.rows({ page: 'current' }).data()[i - 1].age;
+						let bgt = age.replace(/&nbsp;/g, '');
+						//console.log("bgt:" + bgt + "\n");							
+						$("td:eq(1)", this).html(bgt);
+					}
+				});
+			}
+		});
+
+		//after rendering datatable, bind unique id on each row
+		$('#bp5-config').on('draw.dt', function () {
+			let info = bp5Table.page.info();
+			let rows = bp5Table.rows({ page: 'current' }).data();
+			tranIdBinding('5', bp5Table.page.info().page, rows);
+		});
+
+		//after clicking pagination, bind unique id on each row
+		$('#bp5-config').on('page.dt', function () {
+			let info = bp5Table.page.info();
+			console.log('Showing page: ' + info.page + ' of ' + info.pages);
+
+			$('#bp5-config').on('draw.dt', function () {
+				let info = bp5Table.page.info();
+				let rowNo = []
+				let rowStartNo = info.page * 20;
+				let rowEndNo = info.page * 20 + 20;
+				for (let i = rowStartNo; i < rowEndNo; i++) {
+					rowNo.push(i);
+				}
+				//console.log("rowNoArr:" + JSON.stringify(rowNo))
+				let rows = bp5Table.rows(rowNo).data();
+
+				tranIdBinding('5', bp2Table.page.info().page, rows);
+			});
+		});
+	};
+
+	function getTransactionsByBp6(subnetId) {
+		let bp6Table = '';
+
+		bp6Table = $('#bp6-config').DataTable({
+			//30초마다 릴로드할 때 불러오는 데이타
+			ajax: {
+				type: 'get',
+				url: `${URL}${TRANSACTIONS_BYBP}`,
+				data: { 'subnetId': subnetId },
+				dataSrc: 'result',
+				// success: function (data) {
+				// 	console.log("getTransactionsByBp2:" + JSON.stringify(data.result) + "\n");
+				// },
+				error: function (request, status, error) {
+					console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				},
+			},
+			"createdRow": function (row, data, index) { //index = row					
+				$('td', row).eq(0).attr('id', 'txnsBp6-' + index + '-blkNo');
+				$('td', row).eq(2).attr('id', 'txnsBp6-' + index + '-from');
+				$('td', row).eq(3).attr('id', 'txnsBp6-' + index + '-to');
+				$('td', row).eq(6).attr('id', 'txnsBp6-' + index + '-hash');
+				$('td', row).eq(0).attr('val', data.blk);
+				$('td', row).eq(2).attr('val', data.fromAccHexa);
+				$('td', row).eq(3).attr('val', data.toAccHexa);
+				$('td', row).eq(6).attr('val', data.hash);				
+			},
+			"columnDefs": [
+				{ targets: [0, 2, 3, 6], className: 'alignLeft cursorPointer' },		
+				{ targets: [4, 7], className: 'alignLeft' },
+				{ targets: [8, 9, 10, 11, 12], visible: false },
+				{
+					"render": function (data, type, row) {
+						if (row.type == 'TRANSFER') {							
+							return data + ' ' + `<img style="width:16px; height:16px" src='${imgURL}:80/action_images_testnet/${row.c_action}.svg' ></img>`
+						}
+						else {
+							return data
+						}
+					},
+					"targets": 5
+				}				
+			],
+	
+			"columns": [
+				{ "data": "blk" },
+				{ "data": "age" },
+				{ "data": "fromAccHexa" },
+				{ "data": "toAccHexa" },
+				{ "data": "type" },
+				{ "data": "amount" },
+				{ "data": "shortenHash" },
+				{ "data": "bp" },
+				{ "data": "fromAccDecimal" },
+				{ "data": "toAccDecimal" },
+				{ "data": "hash" },
+				{ "data": "c_action" },
+				{ "data": "time" }
+			],
+			"searching": false,
+			"ordering": false,
+			"paging": true,
+			"info": true,
+			"stripeClasses": [],
+			"lengthChange": false,
+			//"lengthMenu": [10, 20, 30, 40, 50],
+			//"displayLength": 20,
+			"pageLength": 20,
+			"order": [[0, 'desc']]
+		});
+
+		setInterval(function () {
+			bp6Table.ajax.reload();
+			$('#ageTimeBp6').html('Age');
+		}, 4000);
+
+		//when Age header clicked, change it to opposit side  (Age <-> Time)
+		const selectedElementsBp6 = $("#bp6-config tr").find("th:eq(1)");
+		$(selectedElementsBp6).on('click', function () {					
+			let strAge = document.querySelector("#bp6Tx > tr:nth-child(1) > td:nth-child(2)")
+			if (strAge.innerHTML.includes('ago')) {
+				$('#ageTimeBp6').html('Time');
+				$('#bp6-config tr').each(function (i) {
+					if (i > 0)//i=0 -> table header, i=1 => first line of table body
+					{
+						let time = bp6Table.rows({ page: 'current' }).data()[i - 1].time;
+						let bgt = getPullTime(Number(time)) || '';
+						//console.log("bgt:" + bgt + "\n");						
+						$("td:eq(1)", this).text(bgt);
+					}
+				});
+			} else {
+				$('#ageTimeBp6').html('Age');
+				$('#bp6-config tr').each(function (i) {
+					if (i > 0)
+					{
+						let age = bp6Table.rows({ page: 'current' }).data()[i - 1].age;
+						let bgt = age.replace(/&nbsp;/g, '');
+						//console.log("bgt:" + bgt + "\n");							
+						$("td:eq(1)", this).html(bgt);
+					}
+				});
+			}
+		});
+
+		//after rendering datatable, bind unique id on each row
+		$('#bp6-config').on('draw.dt', function () {
+			let info = bp6Table.page.info();
+			let rows = bp6Table.rows({ page: 'current' }).data();
+			tranIdBinding('6', bp6Table.page.info().page, rows);
+		});
+
+		//after clicking pagination, bind unique id on each row
+		$('#bp6-config').on('page.dt', function () {
+			let info = bp6Table.page.info();
+			console.log('Showing page: ' + info.page + ' of ' + info.pages);
+
+			$('#bp6-config').on('draw.dt', function () {
+				let info = bp6Table.page.info();
+				let rowNo = []
+				let rowStartNo = info.page * 20;
+				let rowEndNo = info.page * 20 + 20;
+				for (let i = rowStartNo; i < rowEndNo; i++) {
+					rowNo.push(i);
+				}
+				//console.log("rowNoArr:" + JSON.stringify(rowNo))
+				let rows = bp6Table.rows(rowNo).data();
+
+				tranIdBinding('6', bp6Table.page.info().page, rows);
+			});
+		});
+	};
+
+	function getTransactionsByBp7(subnetId) {
+		let bp7Table = '';
+
+		bp7Table = $('#bp7-config').DataTable({
+			//30초마다 릴로드할 때 불러오는 데이타
+			ajax: {
+				type: 'get',
+				url: `${URL}${TRANSACTIONS_BYBP}`,
+				data: { 'subnetId': subnetId },
+				dataSrc: 'result',
+				// success: function (data) {
+				// 	console.log("getTransactionsByBp2:" + JSON.stringify(data.result) + "\n");
+				// },
+				error: function (request, status, error) {
+					console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				},
+			},
+			"createdRow": function (row, data, index) { //index = row					
+				$('td', row).eq(0).attr('id', 'txnsBp7-' + index + '-blkNo');
+				$('td', row).eq(2).attr('id', 'txnsBp7-' + index + '-from');
+				$('td', row).eq(3).attr('id', 'txnsBp7-' + index + '-to');
+				$('td', row).eq(6).attr('id', 'txnsBp7-' + index + '-hash');
+				$('td', row).eq(0).attr('val', data.blk);
+				$('td', row).eq(2).attr('val', data.fromAccHexa);
+				$('td', row).eq(3).attr('val', data.toAccHexa);
+				$('td', row).eq(6).attr('val', data.hash);				
+			},
+			"columnDefs": [
+				{ targets: [0, 2, 3, 6], className: 'alignLeft cursorPointer' },		
+				{ targets: [4, 7], className: 'alignLeft' },
+				{ targets: [8, 9, 10, 11, 12], visible: false },
+				{
+					"render": function (data, type, row) {
+						if (row.type == 'TRANSFER') {							
+							return data + ' ' + `<img style="width:16px; height:16px" src='${imgURL}:80/mainnetAction/${row.c_action}.svg' ></img>`
+						}
+						else {
+							return data
+						}
+					},
+					"targets": 5
+				}				
+			],
+	
+			"columns": [
+				{ "data": "blk" },
+				{ "data": "age" },
+				{ "data": "fromAccHexa" },
+				{ "data": "toAccHexa" },
+				{ "data": "type" },
+				{ "data": "amount" },
+				{ "data": "shortenHash" },
+				{ "data": "bp" },
+				{ "data": "fromAccDecimal" },
+				{ "data": "toAccDecimal" },
+				{ "data": "hash" },
+				{ "data": "c_action" },
+				{ "data": "time" }
+			],
+			"searching": false,
+			"ordering": false,
+			"paging": true,
+			"info": true,
+			"stripeClasses": [],
+			"lengthChange": false,
+			//"lengthMenu": [10, 20, 30, 40, 50],
+			//"displayLength": 20,
+			"pageLength": 20,
+			"order": [[0, 'desc']]
+		});
+
+		setInterval(function () {
+			bp7Table.ajax.reload();
+			$('#ageTimeBp7').html('Age');
+		}, 4000);
+
+		//when Age header clicked, change it to opposit side  (Age <-> Time)
+		const selectedElementsBp6 = $("#bp7-config tr").find("th:eq(1)");
+		$(selectedElementsBp6).on('click', function () {					
+			let strAge = document.querySelector("#bp7Tx > tr:nth-child(1) > td:nth-child(2)")
+			if (strAge.innerHTML.includes('ago')) {
+				$('#ageTimeBp7').html('Time');
+				$('#bp7-config tr').each(function (i) {
+					if (i > 0)//i=0 -> table header, i=1 => first line of table body
+					{
+						let time = bp6Table.rows({ page: 'current' }).data()[i - 1].time;
+						let bgt = getPullTime(Number(time)) || '';
+						//console.log("bgt:" + bgt + "\n");						
+						$("td:eq(1)", this).text(bgt);
+					}
+				});
+			} else {
+				$('#ageTimeBp7').html('Age');
+				$('#bp7-config tr').each(function (i) {
+					if (i > 0)
+					{
+						let age = bp6Table.rows({ page: 'current' }).data()[i - 1].age;
+						let bgt = age.replace(/&nbsp;/g, '');
+						//console.log("bgt:" + bgt + "\n");							
+						$("td:eq(1)", this).html(bgt);
+					}
+				});
+			}
+		});
+
+		//after rendering datatable, bind unique id on each row
+		$('#bp7-config').on('draw.dt', function () {
+			let info = bp7Table.page.info();
+			let rows = bp7Table.rows({ page: 'current' }).data();
+			tranIdBinding('7', bp7Table.page.info().page, rows);
+		});
+
+		//after clicking pagination, bind unique id on each row
+		$('#bp7-config').on('page.dt', function () {
+			let info = bp7Table.page.info();
+			console.log('Showing page: ' + info.page + ' of ' + info.pages);
+
+			$('#bp7-config').on('draw.dt', function () {
+				let info = bp7Table.page.info();
+				let rowNo = []
+				let rowStartNo = info.page * 20;
+				let rowEndNo = info.page * 20 + 20;
+				for (let i = rowStartNo; i < rowEndNo; i++) {
+					rowNo.push(i);
+				}
+				//console.log("rowNoArr:" + JSON.stringify(rowNo))
+				let rows = bp7Table.rows(rowNo).data();
+
+				tranIdBinding('7', bp7Table.page.info().page, rows);
+			});
+		});
+	};
+
+	/**
+     * creating context menu(mouse right click) on each page of transaction datatable
+     * @event blkIdBinding
+     * @param {String} msg A description of...
+     */   
+	function tranIdBinding(tabNo, pageNo, rows) {
+
+		for (let i = 0; i < rows.count(); i++) {
+			// block default context menu
+			//console.log('id: ' + (i + parseInt(pageNo * 20)));
+			let id = i + parseInt(pageNo * 20);
+			document.getElementById("txnsBp" + tabNo + "-" + id + "-blkNo").addEventListener("contextmenu", function (e) { e.preventDefault(); });
+			document.getElementById("txnsBp" + tabNo + "-" + id + "-from").addEventListener("contextmenu", function (e) { e.preventDefault(); });
+			document.getElementById("txnsBp" + tabNo + "-" + id + "-to").addEventListener("contextmenu", function (e) { e.preventDefault(); });
+			document.getElementById("txnsBp" + tabNo + "-" + id + "-hash").addEventListener("contextmenu", function (e) { e.preventDefault(); });
+
+			//display custom context menu
+			$("#txnsBp" + tabNo + "-" + id + "-blkNo").mousedown(function (ev) {			
+				if (ev.which == 3) {
+					createContextMenu("#txnsBp" + tabNo + "-" + id + "-blkNo");
+				}
+			});
+
+			$("#txnsBp" + tabNo + "-" + id + "-from").mousedown(function (ev) {				
+				if (ev.which == 3) {
+					createContextMenu("#txnsBp" + tabNo + "-" + id + "-from");
+				}
+			});
+
+			$("#txnsBp" + tabNo + "-" + id + "-to").mousedown(function (ev) {			
+				if (ev.which == 3) {
+					createContextMenu("#txnsBp" + tabNo + "-" + id + "-to");
+				}
+			});
+
+			$("#txnsBp" + tabNo + "-" + id + "-hash").mousedown(function (ev) {				
+				if (ev.which == 3) {
+					createContextMenu("#txnsBp" + tabNo + "-" + id + "-hash");
+				}
+			});
+		}
+	}
+
+	/**
+	 * executing Animation
+	 * @event executeAni
+	 * @param 
+	 */
+	function executeAni(data) {
+
+		const obj1 = document.getElementById("totalTxsCnt");
+		//	const obj2 = document.getElementById("bpCnt");
+
+		let objs = [];
+		// for(let i = 0;  i < bpLeng ; i++){		
+		// 	objs[i] = i+100;
+		// }
+	
+		// for(let i = 0;  i < bpLeng ; i++){		
+		// 	objs[i]  = document.getElementById("bp"+(i+1)+"TxsCnt");
+		// 	objs[i+1] = document.getElementById("bp"+(i+1)+"Txs24hCnt");			
+		// }
+
+		const obj3 = document.getElementById("bp1TxsCnt");
+		const obj4 = document.getElementById("bp1Txs24hCnt");
+		const obj5 = document.getElementById("bp2TxsCnt");
+		const obj6 = document.getElementById("bp2Txs24hCnt");
+		// const obj7 = document.getElementById("bp3TxsCnt");
+		// const obj8 = document.getElementById("bp3Txs24hCnt");
+		// const obj9 = document.getElementById("bp4TxsCnt");
+		// const obj10 = document.getElementById("bp4Txs24hCnt");
+		// const obj11 = document.getElementById("bp5TxsCnt");
+		// const obj12 = document.getElementById("bp5Txs24hCnt");
+		// const obj13 = document.getElementById("bp6TxsCnt");
+		// const obj14 = document.getElementById("bp6Txs24hCnt");
+		// const obj15 = document.getElementById("bp7TxsCnt");
+		// const obj16 = document.getElementById("bp7Txs24hCnt");
+
+		// console.log("bp1TxsCnt:" + JSON.stringify(obj3) + "\n");
+		// console.log("bp1Txs24hCnt:" + JSON.stringify(obj4) + "\n");
+		// console.log("bp2TxsCnt:" + JSON.stringify(obj5) + "\n");
+		// console.log("bp2Txs24hCnt:" + JSON.stringify(obj6) + "\n");
+
+		if(data.totalTxsCnt)
+			animateValue(obj1, data.totalTxsCnt * 0.98, data.totalTxsCnt, 2000);
+	
+		//	animateValue(obj2, data.bpCnt * 0.98, data.bpCnt, 2000);
+
+		// for(let i = 0;  i < bpLeng ; i++){					
+		// 	animateValue(objs[i], data.bp_info[i].subnetTxsCnt * 0.98, data.bp_info[i].subnetTxsCnt, 2000);
+		// 	animateValue(objs[i+1], data.bp_info[i].subnet24hCnt * 0.98, data.bp_info[i].subnet24hCnt, 2000);
+		// }
+
+		if(data.bp_info[0])
+		{
+			animateValue(obj3, data.bp_info[0].subnetTxsCnt * 0.98, data.bp_info[0].subnetTxsCnt, 2000);
+			animateValue(obj4, data.bp_info[0].subnet24hCnt * 0.98, data.bp_info[0].subnet24hCnt, 2000);
+
+		}else if(data.bp_info[1])
+		{
+			animateValue(obj5, data.bp_info[1].subnetTxsCnt * 0.98, data.bp_info[1].subnetTxsCnt, 2000);
+			animateValue(obj6, data.bp_info[1].subnet24hCnt * 0.98, data.bp_info[1].subnet24hCnt, 2000);
+		}
+		// else if(data.bp_info[2])
+		// {
+		// 	animateValue(obj7, data.bp_info[2].subnetTxsCnt * 0.98, data.bp_info[2].subnetTxsCnt, 2000);
+		// 	animateValue(obj8, data.bp_info[2].subnet24hCnt * 0.98, data.bp_info[2].subnet24hCnt, 2000);
+		// }
+		// else if(data.bp_info[3])
+		// {
+		// 	animateValue(obj9, data.bp_info[3].subnetTxsCnt * 0.98, data.bp_info[3].subnetTxsCnt, 2000);
+		// 	animateValue(obj10, data.bp_info[3].subnet24hCnt * 0.98, data.bp_info[3].subnet24hCnt, 2000);
+		// }
+		// else if(data.bp_info[4])
+		// {
+		// 	animateValue(obj11, data.bp_info[4].subnetTxsCnt * 0.98, data.bp_info[4].subnetTxsCnt, 2000);
+		// 	animateValue(obj12, data.bp_info[4].subnet24hCnt * 0.98, data.bp_info[4].subnet24hCnt, 2000);
+		// }
+		// else if(data.bp_info[5])
+		// {
+		// 	animateValue(obj13, data.bp_info[5].subnetTxsCnt * 0.98, data.bp_info[5].subnetTxsCnt, 2000);
+		// 	animateValue(obj14, data.bp_info[5].subnet24hCnt * 0.98, data.bp_info[5].subnet24hCnt, 2000);
+		// }
+		// else if(data.bp_info[6])
+		// {
+		// 	animateValue(obj15, data.bp_info[6].subnetTxsCnt * 0.98, data.bp_info[6].subnetTxsCnt, 2000);
+		// 	animateValue(obj16, data.bp_info[6].subnet24hCnt * 0.98, data.bp_info[6].subnet24hCnt, 2000);
+		// }
+	}
+
+</script>
