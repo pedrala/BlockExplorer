@@ -2,7 +2,10 @@
 
 ## Capture
 
-finlscan_be
+<p align="center">
+  <img src="capture/finlscan_be.png" alt="finlscan_be" width="1000">
+</p>
+
 
 ## Version Info
 
@@ -21,7 +24,7 @@ npm i
 ```
 
 ## How to install globally
-(pm2 먼저 설치후 바벨 설치해야 함) 
+(please install pm2 first and then babel) 
 ```console
 npm i pm2 -g 
 npm i @babel/core@7.12.17
